@@ -62,3 +62,7 @@
 | RTX 30xx (Ampere) | Ampere            | 8.6                | sm_86     |
 | RTX 40xx (Ada)    | Ada Lovelace      | 8.9                | sm_89     |
 | H100              | Hopper            | 9.0+               | sm_90     |
+
+- the [open llm leader board](https://huggingface.co/open-llm-leaderboard) aims to track, rank and evaluates open LLMs and chatbots.
+- the [lm arena](https://huggingface.co/spaces/lmarena-ai/chatbot-arena) rankings across various LLMs on their versatility, linguistic precision, and cultural context across text.
+- pretrained models are models that were train from scratch, mainly from big companies with access to the compute
