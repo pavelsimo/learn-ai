@@ -83,3 +83,18 @@
     - use the same vocabulary (e.g. facebook/nllb-200-distilled-600M, facebook/nllb-200-1.3B)
     - have the same tokenization scheme
     - tokenizers runs in the CPU
+- all-MiniLM-L6-v2 model: it’s a sentence-embedding model from the Sentence‑Transformers library. It maps sentences (or short paragraphs) into a 384-dimensional dense vector space.
+  - architecture wise: it’s based on the “MiniLM” family
+  - it's fine-tuned for sentence similarity / semantic search tasks
+  - high throughput for embedding many sentences.
+  - it gives a very decent trade-off of accuracy vs cost.
+- other sentence-embedding models: https://www.sbert.net/docs/sentence_transformer/pretrained_models.html
+
+| Model                                 | Better if you need…                                                                     | Trade-offs                                                     |
+| ------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| all-mpnet-base-v2                     | **Higher accuracy** for embedding quality (semantic search, retrieval) ([sbert.net][1]) | Slower, larger model, more resource usage                      |
+| paraphrase-multilingual-MiniLM-L12-v2 | Good for **multilingual** embeddings (many languages) ([Medium][2])                     | Slightly larger than L6 version, maybe slightly less efficient |
+| multi-qa-mpnet-base-cos-v1            | For **question-answering / retrieval** heavy tasks (domain specific) ([sbert.net][1])   | More specialized, maybe overkill for simple embedding tasks    |
+
+[1]: https://www.sbert.net/docs/sentence_transformer/pretrained_models.html?utm_source=chatgpt.com "Pretrained Models — Sentence Transformers documentation"
+[2]: https://medium.com/%40francisco.alvarez.rabanal/fun-with-sentence-transformers-and-vectors-83e029b552b5?utm_source=chatgpt.com "Fun with Sentence Transformers and Vectors | by Francisco Alvarez"
