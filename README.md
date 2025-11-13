@@ -66,3 +66,20 @@
 - the [open llm leader board](https://huggingface.co/open-llm-leaderboard) aims to track, rank and evaluates open LLMs and chatbots.
 - the [lm arena](https://huggingface.co/spaces/lmarena-ai/chatbot-arena) rankings across various LLMs on their versatility, linguistic precision, and cultural context across text.
 - pretrained models are models that were train from scratch, mainly from big companies with access to the compute
+- [facebook not language left behind (NLLB)](https://huggingface.co/facebook/nllb-200-distilled-600M) - machine translation model primarily intended for research in machine translation
+- what exactly is a tokenizer? 
+  - a tokenizer is the component that converts raw text (strings) into numbers (token IDs) that the model can understand.
+  - "Hello world"  →  [15496, 995]
+  - models only understand numbers. 
+  - the tokenizer is the dictionary.
+- can you share a tokenizer across different models?
+  - no, not safely (unless the models use exactly the same vocabulary).
+  - you cannot share tokenizers between unrelated models
+    - GPT-2 tokenizer on a BERT model
+    - NLLB tokenizer on T5
+    - LLaMA tokenizer on Mistral
+  - you can share tokenizers between models that:
+    - come from the same family
+    - use the same vocabulary (e.g. facebook/nllb-200-distilled-600M, facebook/nllb-200-1.3B)
+    - have the same tokenization scheme
+    - tokenizers runs in the CPU
