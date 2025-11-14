@@ -1,3 +1,6 @@
 transformers
 torch==2.7.1
 sentence-transformers
+datasets
+soundfile
+librosa

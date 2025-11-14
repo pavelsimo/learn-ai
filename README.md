@@ -96,5 +96,24 @@
 | paraphrase-multilingual-MiniLM-L12-v2 | Good for **multilingual** embeddings (many languages) ([Medium][2])                     | Slightly larger than L6 version, maybe slightly less efficient |
 | multi-qa-mpnet-base-cos-v1            | For **question-answering / retrieval** heavy tasks (domain specific) ([sbert.net][1])   | More specialized, maybe overkill for simple embedding tasks    |
 
-[1]: https://www.sbert.net/docs/sentence_transformer/pretrained_models.html?utm_source=chatgpt.com "Pretrained Models — Sentence Transformers documentation"
-[2]: https://medium.com/%40francisco.alvarez.rabanal/fun-with-sentence-transformers-and-vectors-83e029b552b5?utm_source=chatgpt.com "Fun with Sentence Transformers and Vectors | by Francisco Alvarez"
+- the ESC50 dataset is a labeled collection of five-second environmental sounds, such as sounds made by animals and humans, nature sounds, indoor sounds, urban noises. 
+- audio data:
+  - sampling           = measuring the value of a continuous signal at fixed time steps.
+  - sampling rate (Hz) = the number of samples taken in one second
+  - 8,000 Hz (8KHz): telephone / walkie-talkie
+  - 16,000 Hz (16KHz): human speech recording
+  - 192,000 Hz (192Khz): high-resolution audio
+  - for example, 5-second sound:
+    - 8,000 Hz => 5 * 8000 = 40,000 signal values
+    - 16,000 Hz => 5 * 16000 = 80,000 signal values
+    - 192,000 Hz => 5 * 192000 = 960,000 signal values
+  - why is the sampling rate important when working with AI models?
+    - it determines how much detail you capture, e.g. 44.1 kHz captures all frequencies humans can hear.
+    - models don’t inherently understand different sampling rates, so if the model learned patterns based on say 16,000 samples per second it will interpret new input as if one second = 16,000 samples.
+    - it impacts model size, training speed, and memory.
+  - if a model is trained at 16,000 Hz and you feed it 10 seconds of audio sampled at 192,000 Hz (without resampling), the model will interpret the input as much longer than it actually is.
+    - 10 seconds x 192,000 samples/sec = 1,920,000 samples
+    - 1,920,000 samples / 16,000 samples/sec = 120 seconds
+
+  ![img_1.png](img_1.png)
+  ![img_2.png](img_2.png)
