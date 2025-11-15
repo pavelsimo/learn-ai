@@ -96,7 +96,6 @@
 | paraphrase-multilingual-MiniLM-L12-v2 | Good for **multilingual** embeddings (many languages) ([Medium][2])                     | Slightly larger than L6 version, maybe slightly less efficient |
 | multi-qa-mpnet-base-cos-v1            | For **question-answering / retrieval** heavy tasks (domain specific) ([sbert.net][1])   | More specialized, maybe overkill for simple embedding tasks    |
 
-- the ESC50 dataset is a labeled collection of five-second environmental sounds, such as sounds made by animals and humans, nature sounds, indoor sounds, urban noises. 
 - audio data:
   - sampling           = measuring the value of a continuous signal at fixed time steps.
   - sampling rate (Hz) = the number of samples taken in one second
@@ -117,3 +116,32 @@
 
   ![img_1.png](img_1.png)
   ![img_2.png](img_2.png)
+
+- the `ESC50 dataset` is a labeled collection of five-second environmental sounds, such as sounds made by animals and humans, nature sounds, indoor sounds, urban noises. 
+  - `ashraq/esc50` points to the ESC-50 dataset repository on Hugging Face
+- in zero-shot audio classification uses user-supplied `candidate_labels`, arbitrary descriptive phrases that the model scores against the audio clips.
+  - `laion/clap-htsat-unfused` is the CLAP audio–text mode
+  - CLAP stands for Contrastive Language-Audio Pretraining—it’s the technique used to train the zero-shot audio/text model.
+  - here “contrastive” means the model learns by comparing matched vs. mismatched pairs—e.g., an audio clip with its true text caption and the same clip with unrelated captions. During training, it pulls the embeddings of true pairs closer together and pushes apart those of mismatched pairs. That contrastive objective teaches the model a joint audio–text space where similarity directly reflects semantic alignment.
+- Automatic Speech Recognition is a task that involves transcribing speech audio recording into text.
+  - meeting notes
+  - videos subtitles
+- what a distilled model? a distilled model is:
+  - a compressed version of a bigger model
+  - trained not on raw human data, but on the teacher model’s outputs 
+  - designed to be faster, cheaper, and more efficient 
+  - while keeping as much of the teacher’s accuracy and behavior as possible
+- stereo audio adds a spatial component that enhances the listening experience for music.
+  - stereo audio has a left and a right channel, similar to how humans have two ears. this lets a system compare what is heard on each side. 
+  - a sound arriving at one "ear" slightly earlier than the other gives clues about its direction (e.g. a sound reaches the left channel a few milliseconds earlier → the source is on the left.)
+  - a sound may be louder in one channel than the other, also indicating direction. (e.g. example: louder in the right channel → source is likely on the right)
+- for transformer models, stereo is usually unnecessary; they typically use mono audio.
+- tasks like recognizing a dog bark, a cat meow, or spoken words don’t require knowing the sound’s spatial location.
+- mono is sufficient because the model only needs to know what was said or heard, not where it came from.
+- stereo has two channels (twice the data), which increases computational complexity without offering meaningful benefits for most transformer audio tasks.
+
+- for models the batch size can be seen as a multiplier of the memory requirement.
+  - example: `- asr(audio_16KHz, chunk_length_s=30, batch_size=4, return_timestamps=True)["chunks"]`
+- it represents how many models (or inputs) you can run in parallel. 
+- if your hardware has enough capacity, you can use a larger batch size (more batches at the same time).
+
