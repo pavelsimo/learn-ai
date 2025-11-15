@@ -145,3 +145,10 @@
 - it represents how many models (or inputs) you can run in parallel. 
 - if your hardware has enough capacity, you can use a larger batch size (more batches at the same time).
 
+- why text-to-speech is a challenging task? 
+  - it is a one-to-many problem. in classification, you have one correct label, maybe a few... 
+  - in automatic speech recognition, there's one correct transcription for a given text.
+  - however, there's an infinite amount of ways to say the same sentence.
+  - each person has a different way of speaking, but they are all valid and correct.
+  - think about different voices, dialects, speaking styles, and so on.
+
