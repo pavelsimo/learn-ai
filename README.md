@@ -152,3 +152,32 @@
   - each person has a different way of speaking, but they are all valid and correct.
   - think about different voices, dialects, speaking styles, and so on.
 
+### 2. Stanford CS231N
+
+- [Python Numpy Tutorial](https://cs231n.github.io/python-numpy-tutorial)
+- what is image classification? is the task of taking an image and assigning it to one label from a fixed set of categories (for example, “cat” or “dog”).
+- why image classification is hard?
+  - the semantic gap: there is a difference in how we perceived the image and how a machine perceived the image, humans understand images based on meaning and context, while machines only see raw pixels.
+  ![img_3.png](img_3.png)
+  - viewpoint variation: for us humans there is not much difference, from the machine perspective all pixels change when the camera moves! 
+  ![img_4.png](img_4.png)
+  - ilumination: the value of each rgb pixel are usually a function of the surface material, color and light source, and that is why same cat (same object) may look different under distinct ilumination conditions.   
+  ![img_5.png](img_5.png)
+  - background clutter: there are many things in the background that make it harder to clearly see the object you want to recognize.
+  ![img_6.png](img_6.png)
+  - occlusion: part of the object you want to recognize is hidden.
+  ![img_7.png](img_7.png)
+  - deformation: the object could look very different from its usual shape or pose.
+  ![img_8.png](img_8.png)
+  - intra class variation: objects from the same category can look very different.
+  ![img_9.png](img_9.png)
+  - context: the surroundings of an object can influence how it’s recognized.
+  ![img_10.png](img_10.png)
+- algorithmic approach: before modern data-driven methods (like deep learning), people tried to classify images using hand-crafted rules.
+  - first, detect simple features like edges. 
+  - then detect more specific features like corners or shapes. 
+  - finally, try to combine these manually defined features to decide what the object is.
+  - the problem: these rules were too simple and couldn’t capture all the variations in real images (different poses, lighting, shapes, backgrounds). in addition, this approach does not scale you have to repeat for each new object to classify.
+    ![img_11.png](img_11.png)
+- data-driven approach: instead of designing features by hand, we let the model learn the right features automatically from large amounts of data.
+  ![img_12.png](img_12.png)
