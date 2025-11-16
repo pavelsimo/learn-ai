@@ -152,6 +152,15 @@
   - each person has a different way of speaking, but they are all valid and correct.
   - think about different voices, dialects, speaking styles, and so on.
 
+- what is end-to-end object detection? end-to-end object detection refers to object-detection systems where the entire process — from input image → bounding boxes + object labels — is learned and optimized in one unified neural network, without needing hand-crafted components or multi-stage pipelines.
+  - [DETR (End-to-End Object Detection) model with ResNet-50 backbone](https://huggingface.co/facebook/detr-resnet-50)
+  ![sample_od.png](data/sample_od.png)
+- what is segmentation mask generation? is a computer-vision task where an AI model produces a pixel-accurate outline (mask) of objects in an image — without necessarily identifying what the object is.
+This is sometimes called class-agnostic segmentation.
+  - [SlimSAM-uniform-77](https://huggingface.co/Zigeng/SlimSAM-uniform-77)
+  ![img_13.png](img_13.png)
+
+
 ### 2. Stanford CS231N
 
 - [Python Numpy Tutorial](https://cs231n.github.io/python-numpy-tutorial)
