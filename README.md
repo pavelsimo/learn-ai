@@ -190,3 +190,56 @@ This is sometimes called class-agnostic segmentation.
     ![img_11.png](img_11.png)
 - data-driven approach: instead of designing features by hand, we let the model learn the right features automatically from large amounts of data.
   ![img_12.png](img_12.png)
+- distance metrics to compare images:
+  ![img_15.png](img_15.png) 
+  - L1 distance: (also called Manhattan distance) is a way to measure how different two things are by adding up the absolute differences between each of their corresponding components (pixels, numbers, features, etc.).
+  - L2 distance: (also called Euclidan distance) measures how far two points (or images, or vectors) are by taking the square root of the sum of squared differences between their corresponding components. it’s the straight-line distance between them.
+  ![img_14.png](img_14.png)
+  ![img_17.png](img_17.png)
+    - what is the problem with L1 distance? despite training being O(1) since there’s nothing to learn, calculating the distance to all images is O(n)! if the dataset grows... for example, to a trillion images — this becomes impractical. it’s better to use an algorithm that’s faster at prediction (inference) time.
+- what is accuracy? accuracy (in simple terms) means how often we get the correct answer.
+  - accuracy = total number of predictions / number of correct predictions
+- what is precision? of all the things the model said were positive, how many were actually positive?
+  - precision = true positives / true positives + false positives
+  - example: How many of the people the detective arrested were actually criminals? 
+    - he arrested 20 people. 
+    - 15 were real criminals. 
+    - precision = 75% 
+    - this is about not arresting innocent people.
+    - precision → “did we catch the right ones?”
+- what is recall? of all the actual positives, how many did the model correctly find?”
+  - recall = true positives / true positives + false negatives
+  - example: How many criminals did the detective find? 
+    - there were 100 real criminals. 
+    - he caught 80. 
+    - recall = 80% 
+    - this is about not missing any real criminals.
+    - recall → “did we catch them all?”
+- what does the majority voting means in the k-nearest neighbors algorithm?
+  - when you want to classify a new point:
+  - the algorithm finds the K closest training points (its “neighbors”). 
+  - each of those neighbors has a known class label. 
+  - the algorithm counts how many neighbors belong to each class. 
+  - the class with the highest count (the majority) is assigned to the new point.
+  - suppose K = 5, and the 5 nearest neighbors have labels:
+  - 3 are green, 1 is blue, 1 is red 
+  - the majority class is green, so the new point is classified as green.
+  ![img_16.png](img_16.png)
+- what are hyperparameters? hyperparameters are settings you choose before training a machine learning model.
+they control how the model learns, but the model does not learn them by itself. think of hyperparameters like cooking settings (temperature, time):
+they affect the result, but the oven doesn’t set them—you do.
+  ![img_18.png](img_18.png)
+  ![img_19.png](img_19.png)
+  - Idea #1: ❌ Bad idea 
+    - because the model may overfit the training data (e.g., K=1 gives perfect training accuracy), and it won’t generalize to new data.
+  - Idea #2: ❌ Bad idea
+    - because you are using the test data to tune the model, so the test data is no longer a fair measure of performance. you lose the ability to evaluate on truly new data.
+  - Idea #3: ✔ Better idea
+    - because the validation set is used for tuning, and the test set stays untouched until the end, giving an honest evaluation of how well the model generalizes.
+  - Idea #4: ✔ Good idea
+    - because it gives a more reliable estimate of how your hyperparameters will perform on new data, especially when the dataset is small.
+- why k-nearest neighbor on images is never used?
+  - very inefficient
+  - distance metrics on images which are very high dimensional objects they act on very unnatural unintuitive ways.
+  ![img_20.png](img_20.png)  
+
