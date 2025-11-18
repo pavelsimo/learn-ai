@@ -243,3 +243,35 @@ they affect the result, but the oven doesn’t set them—you do.
   - distance metrics on images which are very high dimensional objects they act on very unnatural unintuitive ways.
   ![img_20.png](img_20.png)  
 
+- what is a linear classifier? a linear classifier is a simple machine-learning model that makes predictions using a straight-line (linear) decision boundary. a linear classifier tries to separate data into classes using a line, plane, or hyperplane. it cannot learn complex shapes — only straight boundaries.
+  ![img_21.png](img_21.png)
+  ![img_24.png](img_24.png)
+  - the cat image is turned into a long list of numbers (3072 numbers).
+  - the model uses a weight matrix (W) and bias (b) to compute: f(x, W) = Wx + b
+  - the result is 10 numbers, each representing a score for a class (e.g., cat, dog, car, etc.).
+  - a linear classifier just multiplies the input by weights and adds a bias — nothing fancy.
+  - note that in the last image, each row of W can be viewed as a “template” image showing what the model has learned for each class.
+  ![img_25.png](img_25.png)
+  - a linear classifier tries to separate images (like cars, airplanes, deer) using straight lines (or planes in higher dimensions). if an image falls on one side of the line, the classifier scores it higher; if it falls on the other side, the score is lower.
+  - those blurry pictures are the W rows visualized, basically what each classifier “looks for.”, each row of W acts like a template.
+  ![img_26.png](img_26.png)
+
+- neural networks = many simple linear classifiers stacked together!
+  - more layers = more power to learn complex patterns.
+  - each LEGO block represents a linear classifier.
+  ![img_22.png](img_22.png)
+  ![img_23.png](img_23.png)
+
+- what are hard cases for linear classifier? 
+  - the following examples show why linear classifiers are limited. 
+  - they fail on data that is non-linear, circular, or consists of multiple disconnected regions. 
+  - that’s why we stack layers (neural networks) to handle these shapes.
+  ![img_27.png](img_27.png)
+
+- what is a loss function? 
+  - a loss function measures the difference between what the model predicted and what the correct answer should be.
+  - good prediction(s) → low loss 
+  - bad prediction(s)  → high loss
+  - the goal during training is to adjust W (the weights) so that the loss becomes as small as possible.
+   ![img_29.png](img_29.png)
+   ![img_28.png](img_28.png)
