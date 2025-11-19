@@ -182,6 +182,7 @@ This is sometimes called class-agnostic segmentation.
   ![img_9.png](img_9.png)
   - context: the surroundings of an object can influence how it’s recognized.
   ![img_10.png](img_10.png)
+  ![img_32.png](img_32.png)
 - algorithmic approach: before modern data-driven methods (like deep learning), people tried to classify images using hand-crafted rules.
   - first, detect simple features like edges. 
   - then detect more specific features like corners or shapes. 
@@ -196,6 +197,7 @@ This is sometimes called class-agnostic segmentation.
   - L2 distance: (also called Euclidan distance) measures how far two points (or images, or vectors) are by taking the square root of the sum of squared differences between their corresponding components. it’s the straight-line distance between them.
   ![img_14.png](img_14.png)
   ![img_17.png](img_17.png)
+  ![img_33.png](img_33.png)
     - what is the problem with L1 distance? despite training being O(1) since there’s nothing to learn, calculating the distance to all images is O(n)! if the dataset grows... for example, to a trillion images — this becomes impractical. it’s better to use an algorithm that’s faster at prediction (inference) time.
 - what is accuracy? accuracy (in simple terms) means how often we get the correct answer.
   - accuracy = total number of predictions / number of correct predictions
@@ -246,6 +248,7 @@ they affect the result, but the oven doesn’t set them—you do.
 - what is a linear classifier? a linear classifier is a simple machine-learning model that makes predictions using a straight-line (linear) decision boundary. a linear classifier tries to separate data into classes using a line, plane, or hyperplane. it cannot learn complex shapes — only straight boundaries.
   ![img_21.png](img_21.png)
   ![img_24.png](img_24.png)
+  ![img_34.png](img_34.png)
   - the cat image is turned into a long list of numbers (3072 numbers).
   - the model uses a weight matrix (W) and bias (b) to compute: f(x, W) = Wx + b
   - the result is 10 numbers, each representing a score for a class (e.g., cat, dog, car, etc.).
@@ -269,9 +272,90 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_27.png](img_27.png)
 
 - what is a loss function? 
+  - a loss function in simple terms tells you how "bad" a model is!
   - a loss function measures the difference between what the model predicted and what the correct answer should be.
   - good prediction(s) → low loss 
   - bad prediction(s)  → high loss
   - the goal during training is to adjust W (the weights) so that the loss becomes as small as possible.
    ![img_29.png](img_29.png)
-   ![img_28.png](img_28.png)
+   ![img_28.png](img_28.png) 
+
+- how a softmax classifier turns raw scores into probabilities? the softmax classifier turns raw scores into probabilities, then uses the negative log-probability of the correct class as the loss to train the model.
+  ![img_30.png](img_30.png)
+  - the linear classifier produces raw numbers:
+    - cat: **3.2**
+    - car: **5.1**
+    - frog: **–1.7**
+  - these are not probabilities. 
+  - they can be negative, and they don’t sum to 1.
+  - apply `exp()` to make everything positive
+  - we take the exponential of each number:
+    - exp(3.2)  → **24.5**
+    - exp(5.1)  → **164.0**
+    - exp(–1.7) → **0.18**
+  - now everything is **positive**, but still not a probability.
+  - normalize to make them sum to 1 → Softmax
+  - sum = 24.5 + 164.0 + 0.18 ≈ **188.7**
+  - probabilities:
+    - cat: **0.13**
+    - car: **0.87**
+    - frog: **0.00**
+  - so the model thinks the image is **87% car**, **13% cat**, **0% frog**.
+
+- how to compute the loss (cross-entropy loss) for the training?
+  - if the *true label* is **cat**, we look at the probability for “cat,” which is **0.13**.
+  - the loss is:
+    - **L = –log(0.13) ≈ 2.04**
+    - this penalizes the model for giving the correct class a low probability.
+    - so... we adjust the weights **W** so that the probability of the correct class becomes higher.
+    - mathematically, we want to **maximize the probability of the true class**, or equivalently: **minimize the loss**.
+
+- what does cross-entropy measures? cross-entropy measures how different the predicted probabilities are from the true probabilities.
+  ![img_31.png](img_31.png)
+  - so what is H(P, Q)?
+    - H(P, Q) = – Σ P(i) log Q(i) 
+    - P = the true distribution
+    - (the purple vector: 1 for cat, 0 for everything else) => [1, 0, 0]
+    - Q = the model’s predicted distribution
+    - (the green vector: 0.13 cat, 0.87 car, 0.0 frog)
+    - H(P, Q) = “How different is Q from P?”
+    - if Q matches P perfectly → H(P, Q) is small
+    - if Q is very wrong → H(P, Q) is large
+  - note in this case softmax loss = cross-entropy loss, not necessarily always like this.
+
+- why do we use –log for cross-entropy and loss?
+  - because –log(probability) gives a perfect numerical penalty for “how wrong” the model is.
+  - loss = –log(0.99) ≈ 0.01 → **Very small penalty (good)**
+  - loss = –log(0.01) = 4.60 → **HUGE penalty**
+
+- multiclass SVM loss:
+  - we look at all the incorrect classes.
+  - for each one, we compute: sj - sy + 1
+  - if this value is > 0, the incorrect score is too high → penalty.
+  - if it is ≤ 0, the incorrect score is comfortably lower → no penalty.
+  - the total loss for that example is the sum of these penalties.
+  - “if an incorrect class score is higher than (correct score – 1), we add loss. otherwise, we add nothing.”
+  - 🚫 today SVM loss is rarely used in deep learning. 
+  - softmax + cross-entropy has completely replaced SVM loss.
+  - all modern frameworks (PyTorch, TensorFlow, JAX) standardize on softmax cross-entropy
+  ![img_37.png](img_37.png)
+  ![img_36.png](img_36.png)
+
+- what is the point of regularization?
+  - prevent the model from doing too well on training data
+  ![img_35.png](img_35.png)
+  ![img_38.png](img_38.png)
+  - f₁ = a very complex model
+    - it might perfectly fit the training data, but it is overfitting:
+  - f₂ = a simple model
+    - doesn’t pass through all points perfectly. 
+    - but captures the overall trend.
+    - it generalizes better.
+  - so... regularization adds a penalty for complexity.
+
+- why the semicolons in "f(x;W) = Wx"?
+  - mathematicians use “;” to separate regular inputs from parameters of a function, so readers immediately know those variables play different roles.
+  - x = the main variable the function acts on
+  - x = image 
+  - W = model weights 
+  - **W** is not an input in the traditional function sense — it's a parameter we optimize
