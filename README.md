@@ -344,6 +344,7 @@ they affect the result, but the oven doesn’t set them—you do.
 - what is the point of regularization?
   - prevent the model from doing too well on training data
   ![img_35.png](img_35.png)
+  ![img_39.png](img_39.png)
   ![img_38.png](img_38.png)
   - f₁ = a very complex model
     - it might perfectly fit the training data, but it is overfitting:
