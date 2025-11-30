@@ -83,7 +83,7 @@
     - use the same vocabulary (e.g. facebook/nllb-200-distilled-600M, facebook/nllb-200-1.3B)
     - have the same tokenization scheme
     - tokenizers runs in the CPU
-- all-MiniLM-L6-v2 model: it’s a sentence-embedding model from the Sentence‑Transformers library. It maps sentences (or short paragraphs) into a 384-dimensional dense vector space.
+- `all-MiniLM-L6-v2` model: it’s a sentence-embedding model from the Sentence‑Transformers library. It maps sentences (or short paragraphs) into a 384-dimensional dense vector space.
   - architecture wise: it’s based on the “MiniLM” family
   - it's fine-tuned for sentence similarity / semantic search tasks
   - high throughput for embedding many sentences.
@@ -113,7 +113,6 @@
   - if a model is trained at 16,000 Hz and you feed it 10 seconds of audio sampled at 192,000 Hz (without resampling), the model will interpret the input as much longer than it actually is.
     - 10 seconds x 192,000 samples/sec = 1,920,000 samples
     - 1,920,000 samples / 16,000 samples/sec = 120 seconds
-
   ![img_1.png](img_1.png)
   ![img_2.png](img_2.png)
 
@@ -164,6 +163,8 @@ This is sometimes called class-agnostic segmentation.
 ### 2. Stanford CS231N
 
 - [Python Numpy Tutorial](https://cs231n.github.io/python-numpy-tutorial)
+- [Repository](https://github.com/cs231n/cs231n.github.io)
+- [Website](https://cs231n.stanford.edu/index.html)
 - what is image classification? is the task of taking an image and assigning it to one label from a fixed set of categories (for example, “cat” or “dog”).
 - why image classification is hard?
   - the semantic gap: there is a difference in how we perceived the image and how a machine perceived the image, humans understand images based on meaning and context, while machines only see raw pixels.
@@ -343,6 +344,9 @@ they affect the result, but the oven doesn’t set them—you do.
 
 - what is the point of regularization?
   - prevent the model from doing too well on training data
+  - express preferences over weights
+  - make the model simple so it works on test data
+  - improve optimization by adding curvature
   ![img_35.png](img_35.png)
   ![img_39.png](img_39.png)
   ![img_38.png](img_38.png)
@@ -353,10 +357,385 @@ they affect the result, but the oven doesn’t set them—you do.
     - but captures the overall trend.
     - it generalizes better.
   - so... regularization adds a penalty for complexity.
+  - λ controls how much the model should care about simplicity vs accuracy.
+  - if λ is small -> regularization is "weak"
+  - if λ is large -> regularization is strong
+  - you are literally choosing how much you want to punish complexity.
 
-- why the semicolons in "f(x;W) = Wx"?
+- what are the types of regularization?
+  ![img_40.png](img_40.png)
+  - other more advance types:
+  ![img_41.png](img_41.png)
+
+- which of w1 or w2 will the L2 regularizer prefer?
+  ![img_42.png](img_42.png)
+
+- why the semicolons in `f(x;W) = Wx`?
   - mathematicians use “;” to separate regular inputs from parameters of a function, so readers immediately know those variables play different roles.
   - x = the main variable the function acts on
   - x = image 
   - W = model weights 
   - **W** is not an input in the traditional function sense — it's a parameter we optimize
+
+- why do we use softmax? 
+  - softmax is popular because it converts scores into probabilities and gives a smooth, stable loss that works extremely well with gradient descent — making it the best choice for multi-class classification in deep learning.
+  ![img_43.png](img_43.png)
+
+- why should not calculate the derivative this way?
+  ![img_44.png](img_44.png)
+  - this is one of the core ideas behind why we use analytic gradients (backpropagation) instead of numerical gradients.
+  - for each parameter by nudging it slightly and observing the change in loss.
+  - **reason 1:** it is extremely slow
+    - 1,000 weights → 1,000 numerical derivatives
+    - a modern neural network: 10 million weights → 10 million loss evaluations
+    - why so slow? 
+      - copy the entire model
+      - add ℎ to one weight
+      - compute the whole forward pass
+      - compute the loss
+    - backpropagation computes all gradients at once with one forward pass + one backward pass.
+  - numerical gradient: O(number of weights)
+  - backpropagation: O(1) relative to model size
+  - **reason 2:** it is inaccurate
+    - when h is tiny (like 0.0001), floating point error becomes huge.
+  - **reason 3:** it is very sensitive to the choice of **h**
+    - if h is too large → gradient is inaccurate
+    - if h is too small → floating point errors dominate
+    - no single value of h works well for all situations.
+    - backpropagation does not have this problem at all.
+  - **reason 4:** You must repeat a full forward pass for EVERY weight
+    - with millions of weights, training would take years.
+    - this is why neural networks are even possible today.
+  - **reason 5:** you cannot use numerical gradients for training
+    - they are too noisy and too slow.
+    - people sometimes use numerical gradients only to check (verify) that a backprop implementation is correct — but never for real training.
+
+- a vector of derivatives is a "gradient"!
+
+- what is the alternative for computing those derivatives?
+  - use "analytic" gradient.
+  - do not use "numerical" gradient.
+  ![img_45.png](img_45.png)
+  ![img_46.png](img_46.png)
+  
+- what is a convex function?
+  - a convex function is shaped like a bowl. there is only one lowest point, and gradient descent will always find it.
+  - it has one global minimum
+  - example: f(x) = x^2
+
+- what is a non-convex function?
+  - a non-convex function is shaped like a mountain landscape with many valleys.
+  - has multiple local minima
+  - example: f(x) = sin(x)
+
+- what is a non-differentiable function?
+  - a non-differentiable point is a sharp point where you cannot draw a unique tangent line.
+  - f(x) = ∣x∣ no unique slope → derivative does not exist at 0.
+  - a function can be:
+    - convex and non-differentiable (e.g., |x| is convex but has a corner)
+    - non-convex and differentiable (e.g., sin(x))
+
+- what is gradient descent?
+  - gradient descent is an algorithm used to find the min. of a function in ML, that function is the loss.
+  ![img_47.png](img_47.png)
+  ![img_49.png](img_49.png)
+
+- what is the learning rate in gradient descent (or other optimizers)?
+  - the learning rate (also called step size) is one of the most important hyperparameters in gradient descent.
+  - the learning rate controls how big a step gradient descent takes each time it updates the weights.
+  - ✔ small η → tiny steps
+  - ✔ large η → big steps
+  - intuition:
+    - if your steps are too big → you overshoot, bounce around, or even fly off the hill. 
+    - if your steps are too small → you move very slowly.
+    - if your steps are just right → you smoothly descend to the minimum.
+  ![img_62.png](img_62.png)
+  - what you can do to improve learning rates while training?
+  ![img_63.png](img_63.png)
+  ![img_64.png](img_64.png)
+  ![img_65.png](img_65.png)
+  ![img_66.png](img_66.png)
+
+- what is stochastic gradient descent (SGD)?
+  - is a type of gradient descent that updates the model using only a small random batch of data each step, making training faster and more scalable than computing the gradient on the entire dataset.
+  - “stochastic” means random.
+  - the gradient you compute each step is random because each minibatch is random.
+  - it's not the true gradient — it's a noisy estimate.
+  ![img_48.png](img_48.png)
+
+- why SGD is used everywhere in deep learning? 
+  - ✔ much faster than full gradient descent 
+  - ✔ works well with huge datasets (ImageNet, etc.)
+  - ✔ the noise helps escape poor minima and improves generalization 
+  - ✔ works well with GPU batching 
+  - ✔ all modern optimizers (Adam, RMSprop, Momentum) are built on top of SGD
+
+- what are some of the problems of SGD?
+  ![img_55.png](img_55.png)
+  1. very slow progress along shallow dimension, jitter along steep direction.
+    ![img_50.png](img_50.png)
+  2. zero gradient, gradient descent gets "stuck". for example in a saddle point, the gradient is zero in all directions, so you could get stuck...
+    ![img_52.png](img_52.png)
+    ![img_53.png](img_53.png)
+  3. our gradients come from minibatches so they can be noisy! look at the path it follows, is messy...
+    ![img_54.png](img_54.png)
+
+- what is SGD with momentum?
+  - it helps SGD to:
+    - escape saddle points
+    - reduce oscillations
+    - move faster along shallow but consistent slopes
+    - converge faster and more smoothly
+  ![img_56.png](img_56.png)
+
+- what is RMSProp?
+  - RMSProp (Root Mean Square Propagation) is an adaptive learning rate optimization algorithm commonly used when training neural networks. It was proposed by Geoffrey Hinton.
+
+- what is Adam optimizer?
+  - Adam (Adaptive Moment Estimation) is one of the most popular optimization algorithms for training neural networks. Think of it as a combination of Momentum + RMSProp, with some extra fixes.
+  - first_moment → average of gradients (momentum) “where we were heading”
+    - first_moment to get a smooth direction
+    - 90% = “where we were heading”
+  - second_moment → average of squared gradients (RMSProp)
+    - second_moment to get a per-dimension normalized step size
+    - 10% = “new gradient direction”
+  ![img_57.png](img_57.png)
+  ![img_59.png](img_59.png)
+  ![img_58.png](img_58.png)
+  ![img_60.png](img_60.png)
+
+- what is the difference between AdamW and Adam?
+  - **Adam** weight decay is applied inside the gradient → gets distorted by momentum/RMS scaling.
+  - **AdamW** weight decay is applied outside the gradient → pure, correct shrinking of weights.
+  ![img_61.png](img_61.png)
+
+- what is weight decay?
+  - is a regularization technique used during training to keep neural network weights small so the model doesn’t overfit.
+  - weight decay = shrinking the weights a tiny bit on every update.
+  - without weight decay: `x ← x - learning_rate * gradient`
+  - with weight decay (strength λ):
+    - `x ← x - learning_rate * gradient`
+    - `x ← x - learning_rate * λ * x`
+  - why do we want weights to be small?
+    - large weights make the model very flexible → risk of memorizing training data
+    - small weights produce smoother, simpler functions → better generalization
+    - prevents exploding weights
+    - works like L2 regularization
+  - 🎯 Weight decay = L2 regularization
+    - if you add an L2 penalty to the loss: `loss_total = loss + λ * ||x||²`
+    - and take gradient steps, you get the same “shrinking” effect.
+    - so weight decay is basically a practical version of L2 regularization inside the optimizer.
+    - (normally the L2 regularization it is part of the loss function.)
+
+- what is an optimizer?
+  - in machine learning, an optimizer is an algorithm that adjusts a model’s parameters (weights and biases) to reduce the error between the model’s predictions and the true targets.
+  - optimizers are just teaching "styles":
+    - SGD = reacts immediately to your advice
+    - Momentum = remembers past advice
+    - RMSProp = slows down when advice becomes too wild
+    - Adam = combines both remembering + slowing down
+    - AdamW = Adam but with healthier habits
+  ![img_67.png](img_67.png)
+
+- what are second-order optimizations? and why are there not use in deep learning?
+  - let's start with some intuition...
+  - imagine you're hiking down a mountain and trying to reach the lowest point (the minimum).
+  - you want to know:
+    - which direction should I walk? → this is the gradient (first derivative).
+    - how steep or curved is the ground around me? → this is the Hessian (second derivative).
+  - so... 
+  - 🔵 first order methods (like SGD, Adam) they only use the gradient!
+    - “the slope goes down to the right → take a step right.”
+  - 🟢 second-order methods (like Newton’s Method) they also use the curvature:
+    - “Not only is the slope going right, 
+    - but the ground curves upward/downward this much 
+    - → so here is the exact best step to jump to the bottom.”
+    - this requires the **Hessian matrix**, which measures curvature.
+  - this means with second-order info, the optimizer can:
+    - take bigger steps when the landscape is flat 
+    - take smaller steps when the landscape is curved 
+    - jump straight to minima in a few steps for simple problems 
+    - remove the need for learning rate tuning
+  - sounds perfect, right?
+  - so why don’t we use them in deep learning?
+    - the Hessian is huge (too big to compute)
+      - 100,000 parameters → Hessian is a 100,000 × 100,000 matrix
+      - GPT-3 has 175 billion parameters → Hessian would have
+      - 175,000,000,000 × 175,000,000,000 entries 🤯
+    - computing it is extremely expensive
+      - computing a Hessian requires: i) second derivatives, ii) many passes through the model, iii) tons of memory
+      - in practice: 1000× slower or worse.
+    - deep learning landscapes are not like smooth bowls
+      - chaotic, non-convex, full of saddle points
+      - The Hessian can be:
+        - singular (not invertible)
+        - extremely noisy
+        - impossible to approximate reliably
+    - overfitting
+      - second-order methods tend to overfit because they aggressively fit the curvature of the training data.
+  ![img_68.png](img_68.png)
+  ![img_69.png](img_69.png)
+
+- how does a two layer neural network looks like?
+  - x input vector ℝᴰ 
+  - D — input dimension
+    - this tells you how many numbers are in your input vector x.
+  - H — hidden layer size
+    - the number of neurons in the hidden layer.
+  - C — number of classes
+    - usually the output dimension for classification.
+  - W₁ first-layer weights ℝᴴ×ᴰ
+  - W₂ second-layer weights ℝᶜ×ᴴ
+  - h = max(0,h) - is important to add non-linearity to the network 
+  ![img_70.png](img_70.png)
+  - why do we want non-linearity?
+  ![img_71.png](img_71.png)
+  - you can keep adding layers...
+  ![img_72.png](img_72.png)
+
+- using more layers, the neural network can learn more templates:
+ ![img_73.png](img_73.png)
+
+- what happen if we try to build a neural network without an activation function?
+ ![img_74.png](img_74.png)
+
+- what are activations functions?
+  - activation functions are mathematical functions used inside neural networks to introduce non-linearity.
+  - without activation functions → a neural network is just a linear model.
+  ![img_75.png](img_75.png)
+
+- architecture and minimal implementation of a neural network:
+  ![img_76.png](img_76.png)
+  ![img_77.png](img_77.png)
+  ![img_78.png](img_78.png)
+
+- what does more neurons in a neural network usually means?
+  ![img_79.png](img_79.png)
+
+- as a rule of thumb, do not use the size of a neural network as a "regularizer". use a stronger regularization instead:
+  ![img_80.png](img_80.png) 
+
+- neural networks playground:
+  - https://playground.tensorflow.org/
+  - https://cs.stanford.edu/people/karpathy/convnetjs/demo/classify2d.html
+
+- similarities between our brain neurons and a neural network:
+  ![img_81.png](img_81.png)
+  ![img_82.png](img_82.png)
+  ![img_83.png](img_83.png)
+  ![img_84.png](img_84.png)
+
+- what is the problem of computing gradients in a neural network?
+  - manually computing gradients requires lots of messy matrix calculus.
+  - changing anything (loss function, model structure) means re-deriving everything again.
+  - for realistic neural networks, manual derivation is impossible and unscalable.
+  - therefore: we need automatic differentiation, not hand-written gradients.
+  - even a small 2-layer network (W₂ · ReLU(W₁x)) already produces complex derivatives!
+  - loss = hinge loss + regularization → more things to differentiate.
+  - to train the model we need ∂L/∂W₁ and ∂L/∂W₂, but computing them manually is difficult.
+  - this motivates **backpropagation**: an algorithm to compute gradients automatically.
+  - ![img_85.png](img_85.png)
+
+- so what is the alternative? "backpropagation" to the rescue!
+  ![img_86.png](img_86.png)
+  ![img_87.png](img_87.png)
+  ![img_88.png](img_88.png)
+
+- in a neural network, “parameters” means ONLY the learnable weights and biases:
+  - W1, W2
+  - biases b1, b2
+  - these are what gradient descent updates.
+
+- parameters = learnable values (weights, biases). 
+- nodes = everything in the computation graph (inputs, additions, multiplications, activations). 
+- backprop computes gradients for all nodes, but only uses the gradients of parameters to update the model.
+
+![img_89.png](img_89.png)
+
+- important points to remember for backpropagation:
+  - first pass: We evaluate the function (the forward pass). 
+  - second pass: We go backwards using the chain rule. the “upstream gradient” is simply the gradient that has been accumulated up to this point. 
+  - local gradient: This is just the derivative of the current operation with respect to its inputs.
+
+- modularized implementation: forward / backward API
+  ![img_90.png](img_90.png)
+  ![img_99.png](img_99.png)
+  - PyTorch sigmoid layer: 
+    ![img_91.png](img_91.png)
+    ![img_92.png](img_92.png)
+    ![img_93.png](img_93.png)
+
+- vector derivatives
+  - derivative = “if I nudge x, how does y move?”
+  - gradient = “if i nudge each coordinate of x, how does y move?”
+  - jacobian = “if i nudge each coordinate of x, how does each coordinate of y move?”
+  ![img_94.png](img_94.png)
+  ![img_95.png](img_95.png)
+  ![img_96.png](img_96.png)
+  ![img_97.png](img_97.png)
+  ![img_98.png](img_98.png)
+  - backprop = repeated application of the vector chain rule
+  - the vector chain rule requires the Jacobian
+  - ReLU’s Jacobian happens to be diagonal (so it’s easy)
+  - neural networks never build Jacobian matrices explicitly, but the concept explains how gradients flow
+
+- in backpropagation remember the following:
+  - forward: compute the loss
+  - backward: compute the gradients
+  - and the update phase uses the gradients to change your weights.
+
+- ICLR is a real, major academic conference in machine learning — especially focused on representation learning / deep learning.
+  - ICLR publishes research on topics like representation learning, optimization, neural networks, etc.
+  - Website: https://iclr.cc/
+  ![img_100.png](img_100.png)
+
+- different ways of doing image classification:
+  - linear classifier:
+    ![img_101.png](img_101.png)
+  - image features (old way):
+    ![img_102.png](img_102.png)
+    - color histogram 
+    ![img_103.png](img_103.png)
+    - histogram of oriented gradients (HoG):
+    ![img_104.png](img_104.png)
+    - so... the idea was to "mix" many features and try to classify the image:
+    ![img_105.png](img_105.png)
+  - end to end neural network:
+    ![img_106.png](img_106.png)
+
+- since all the all pixels are stacked into a single long vector, the spatial structure of images is destroyed.
+  - what is lost?
+    - local patterns
+    - edges
+    - shapes
+    - spatial relationships
+- CNNs solve this by keeping the image as a 2D grid and using special operations that respect spatial structure.
+  - convolution = sliding small filters over the image to detect patterns.
+  - CNNs dominated all vision tasks between ~2012 - 2020
+  ![img_108.png](img_108.png)
+  ![img_107.png](img_107.png)
+  - [Gradient-based learning applied to document recognition](http://vision.stanford.edu/cs598_spring07/papers/Lecun98.pdf)
+  ![img_109.png](img_109.png)
+  - [ImageNet Classification with Deep Convolutional Neural Networks "AlexNet"](https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf) 
+  ![img_110.png](img_110.png)
+  - [Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks](https://arxiv.org/pdf/1506.01497)
+  ![img_111.png](img_111.png)
+  - [Deep Visual-Semantic Alignments for Generating Image Descriptions](https://arxiv.org/pdf/1412.2306)
+  ![img_112.png](img_112.png)
+  - [High-Resolution Image Synthesis with Latent Diffusion Models](https://arxiv.org/pdf/2112.10752)
+  ![img_113.png](img_113.png)
+  - [Attention Is All You Need](https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf)
+  - [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/pdf/2010.11929)
+  ![img_114.png](img_114.png)
+
+- a fully connected layer looks at the entire image at once, while a convolutional layer looks at local regions using small filters, slides them across the image, and stacks their responses into a multi-channel feature map.
+![img_115.png](img_115.png)
+![img_116.png](img_116.png)
+![img_117.png](img_117.png)
+![img_118.png](img_118.png)
+![img_119.png](img_119.png)
+![img_120.png](img_120.png)
+
+- for CNNs we sometimes work with batches for images instead of a single image:
+![img_121.png](img_121.png)
+![img_122.png](img_122.png)
