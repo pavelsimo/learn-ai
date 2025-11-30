@@ -712,6 +712,12 @@ they affect the result, but the oven doesn’t set them—you do.
 - CNNs solve this by keeping the image as a 2D grid and using special operations that respect spatial structure.
   - convolution = sliding small filters over the image to detect patterns.
   - CNNs dominated all vision tasks between ~2012 - 2020
+  - the word “convolutional” comes from the noun “convolution” and means something twisted, complicated, or folded together.
+  - in math, a convolution is when you: 
+    - take a small function,
+    - slide it across another function,
+    - combine their values by overlapping.
+  - so two things "fold into each other" as one slides over the other...
   ![img_108.png](img_108.png)
   ![img_107.png](img_107.png)
   - [Gradient-based learning applied to document recognition](http://vision.stanford.edu/cs598_spring07/papers/Lecun98.pdf)
@@ -729,13 +735,86 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_114.png](img_114.png)
 
 - a fully connected layer looks at the entire image at once, while a convolutional layer looks at local regions using small filters, slides them across the image, and stacks their responses into a multi-channel feature map.
-![img_115.png](img_115.png)
-![img_116.png](img_116.png)
-![img_117.png](img_117.png)
-![img_118.png](img_118.png)
-![img_119.png](img_119.png)
-![img_120.png](img_120.png)
+  ![img_115.png](img_115.png)
+  ![img_116.png](img_116.png)
+  ![img_117.png](img_117.png)
+  ![img_118.png](img_118.png)
+  ![img_119.png](img_119.png)
+  ![img_120.png](img_120.png)
 
 - for CNNs we sometimes work with batches for images instead of a single image:
-![img_121.png](img_121.png)
-![img_122.png](img_122.png)
+  ![img_121.png](img_121.png)
+  ![img_122.png](img_122.png)
+
+- a ConvNet is a neural network with a bunch of convolutional layers!
+  ![img_123.png](img_123.png)
+  - we need to add activation layers in between, because a composition of convolutional layers is still linear, so there won’t be any difference compared to having just one layer.  
+  ![img_124.png](img_124.png)
+
+- what does the ConvNet learn?
+  ![img_125.png](img_125.png)
+  ![img_126.png](img_126.png)
+  ![img_127.png](img_127.png)
+  ![img_128.png](img_128.png)
+
+- how to calculate the spatial dimensions of a convolution?
+  ![img_129.png](img_129.png)
+  ![img_130.png](img_130.png)
+  ![img_131.png](img_131.png)
+  ![img_132.png](img_132.png)
+
+- what is the receptive field? 
+  - the receptive field tells you how much of the original image affects a particular neuron in a deep layer. The more layers you stack, the larger the part of the image each neuron “sees.”
+  - in this CNN context, a “neuron” simply means: a single value (or cell) in a feature map, so:
+    - one pixel in the input image,
+    - or one pixel in a hidden feature map,
+    - or one pixel in the final output map.
+  - all of these are neurons in a convolutional neural network.
+  ![img_133.png](img_133.png)
+  ![img_134.png](img_134.png)
+  ![img_135.png](img_135.png)
+  ![img_136.png](img_136.png)
+
+- what is a strided convolution?
+  - a strided convolution moves the filter in larger steps, which downsamples the image (reduces its spatial size) while still extracting features.
+  - think of a camera scanning an image:
+    - stride 1 = take a picture at every pixel
+    - stride 2 = take a picture every 2 pixels → fewer pictures → smaller output
+  - in this example the filter move like this:
+    - (0,0) → (0,2) → (0,4)
+    - (2,0) → (2,2) → (2,4)
+    - (4,0) → (4,2) → (4,4)
+  ![img_137.png](img_137.png)
+
+- convolution examples:
+  ![img_138.png](img_138.png)
+  ![img_139.png](img_139.png)
+  ![img_140.png](img_140.png
+
+- convolution summary:
+  ![img_141.png](img_141.png)
+
+- convolutions in pytorch:
+  ![img_142.png](img_142.png)
+  
+- what are pooling layers? 
+  - pooling layers are a simple way to shrink (downsample) feature maps in a CNN while keeping the important information. 
+  - they don’t learn anything — they just apply a fixed rule like max or average.
+  - note that max pooling introduces non-linearity, so you may not need ReLU after a max-pooling operation. 
+  - if it is average pooling, this is a linear operator, which means you will probably need a ReLU afterward.
+  ![img_143.png](img_143.png)
+  ![img_144.png](img_144.png)
+
+- pooling summary:
+  ![img_145.png](img_145.png)
+
+- what is translation equivariance? 
+  - translation equivariance means the network recognizes the same features even if the object moves to a different spot in the image.
+  - 🐸 intuition from the frog image:
+    - you take an image of a frog.
+    - you shift it a bit to the right or down.
+    - you apply a convolution or pooling.
+    - the features (edges, textures, patterns) you detect simply shift to the new place, but stay the same.
+  ![img_146.png](img_146.png)
+  ![img_147.png](img_147.png)
+  ![img_148.png](img_148.png)
