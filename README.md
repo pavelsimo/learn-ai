@@ -818,3 +818,68 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_146.png](img_146.png)
   ![img_147.png](img_147.png)
   ![img_148.png](img_148.png)
+
+- what are the components of CNNs?
+  ![img_149.png](img_149.png)
+
+- [Layer normalization](https://arxiv.org/pdf/1607.06450) (LayerNorm):
+  - is a normalization method that normalize each sample’s features to stabilize training and make the network learn faster. 
+  - you take one training example at a time.
+  - you compute the mean and standard deviation across its features.
+  - you do not look at other examples in the batch.
+  - each sample is normalized independently.
+  - example: 
+    - input (2 samples, 3 features):
+    - x =
+    - [ 1   2   3 ]
+    - [ 4   5   6 ]
+    - sample 1: [1 2 3]
+    - mean = 2
+    - std  = 1
+    - normalized = [ (1-2)/1 , (2-2)/1 , (3-2)/1 ]
+    - = [ -1 , 0 , 1 ]
+  ![img_150.png](img_150.png)
+
+- Other normalization methods: 
+    ![img_151.png](img_151.png)
+    - all of this normalization are in `torch.nn`
+      - `nn.BatchNorm2d(num_features=2)`
+      - `nn.LayerNorm(normalized_shape=[2, 2, 2])`
+      - `nn.InstanceNorm2d(num_features=2, affine=True)`
+      - `nn.GroupNorm(num_groups=1, num_channels=2)`
+    - [Group Normalization](https://arxiv.org/pdf/1803.08494)
+
+- What is regularization Dropout?
+  - dropout is a technique where, during training, we randomly:
+    - turn off (set to zero) some neurons
+    - with a certain probability (e.g., 0.5)
+  - [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](https://www.jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf) 
+    ![img_152.png](img_152.png)
+  - why does Dropout help with overfitting?
+    - it prevents neurons from relying on each other too much
+      - without dropout, neurons can "co-adapt":
+      - neuron A always relies on neuron B
+      - so the model memorizes patterns too closely → overfitting
+    - it acts like training many different networks at once
+      - because each training pass has a different subset of active neurons, dropout:
+    - it adds noise during training → makes the model more robust
+      - randomly removing neurons adds noise to internal representations.
+      - this prevents the model from memorizing the training data.
+    - pytorch: `self.drop = nn.Dropout(p=0.5)`
+  - how can this possibly be a good idea?
+    ![img_153.png](img_153.png)
+    ![img_154.png](img_154.png)
+    ![img_155.png](img_155.png)
+  
+- What is the goal of activation functions?
+  ![img_156.png](img_156.png)
+
+- In which regions does sigmoid have a small gradient?
+  ![img_157.png](img_157.png)
+  ![img_158.png](img_158.png)
+  - this saturation issue is why "ReLU" became really popular:
+  - in sigmoid when neurons receive large positive or negative inputs:
+    - they move into the “flat” part of the sigmoid
+    - their gradient almost disappears
+    - gradients vanish during backpropagation
+  ![img_159.png](img_159.png)
