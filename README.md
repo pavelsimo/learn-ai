@@ -883,3 +883,142 @@ they affect the result, but the oven doesn’t set them—you do.
     - their gradient almost disappears
     - gradients vanish during backpropagation
   ![img_159.png](img_159.png)
+  - ReLU is not perfect... since for gradient of negative numbers we have always 0, to improve on this:
+  - GeLU is the main activation function use in transformers today
+  ![img_160.png](img_160.png)
+  - the activation function zoo:
+  ![img_161.png](img_161.png)
+  - where are activations used in CNNs?
+  ![img_162.png](img_162.png)
+
+- number of layers vs. error rate for the ImageNet winners:
+  ![img_163.png](img_163.png)
+  ![img_171.png](img_171.png)
+
+- in AI we plot architectures using block diagrams as the one below.
+- each block represents a layer or a group of layers
+- helps to gain intuition of the different layers with a glance
+  ![img_164.png](img_164.png)
+- what is the effective receptive field of three 3x3 conv (stride 1) layers?
+  - stack of three 3x3 conv (stride 1) layers has the same effective receptive field as one 7x7 conv layer  
+    ![img_165.png](img_165.png)
+    ![img_166.png](img_166.png)
+    ![img_167.png](img_167.png)
+    ![img_168.png](img_168.png)
+    ![img_169.png](img_169.png)
+  - it has fewer parameters as well:
+    ![img_170.png](img_170.png)
+
+- why deeper models sometimes perform worse than shallower models?
+  ![img_172.png](img_172.png)
+  ![img_173.png](img_173.png)
+  - ResNet helps deep networks learn better by letting each block only learn what changed, not everything from scratch:
+  ![img_174.png](img_174.png)
+  ![img_175.png](img_175.png)
+  - RestNet architecture:
+  ![img_176.png](img_176.png)
+
+- what happens if you initialize your neural network with weights that are **too small**?
+- using weights that are too small causes activations to shrink toward zero in deep networks, making learning impossible.
+- deep networks need signals to flow forward through layers.
+- if the weights are too small:
+  - the signal keeps shrinking
+  - after many layers, the numbers get close to zero
+  - the network outputs almost nothing
+  - gradients during training also become tiny
+    - → The network cannot learn
+  - this problem is called vanishing activations (related to vanishing gradients).
+  ![img_177.png](img_177.png)
+
+- what happens if you initialize your neural network with weights that are **too large**?
+- if weights are slightly too large, the network amplifies values every layer until everything becomes huge and unstable, making training impossible.
+- this is called **activation explosion** or **blowup**.
+- so...
+- 🔹 Weights too small → activations shrink to zero.
+- 🔺 Weights too large → activations explode (blow up).
+  - if W is 5× larger than before:
+    - each dot product becomes 5× larger
+    - after layer 2, it's ~25× larger
+    - after layer 3, ~125×
+    - after layer 4, ~625×
+  ![img_178.png](img_178.png)
+
+- a solution for initializing the weights: Kaiming / MSRA initialization
+  - [Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification](https://arxiv.org/pdf/1502.01852)
+  - this method chooses the standard deviation of the weights so that:
+    - after multiplication by the weight matrix
+    - and after the ReLU
+  - ...the output activations stay at the same scale as the input activations.
+  ![img_179.png](img_179.png)
+  - pytorch uses He/Kaiming initialization by default in many layers (e.g., nn.Conv2d, nn.Linear when using ReLU).
+  - and you can apply it manually: `torch.nn.init.kaiming_uniform_(tensor, a=0, mode='fan_in', nonlinearity='relu')`
+  - other methods:
+    - `torch.nn.init.xavier_uniform_(tensor)`
+    - `torch.nn.init.orthogonal_(tensor)`
+    - `torch.nn.init.constant_(tensor, value=0.1)`
+    - `torch.nn.init.uniform_(tensor, a=-0.1, b=0.1)`
+    - `torch.nn.init.normal_(tensor, mean=0.0, std=0.02)`
+  - why pytorch prefers Kaiming for ReLU networks?
+    - because ReLU networks dominate modern deep learning, and He initialization:
+    - prevents vanishing activations
+    - prevents exploding activations
+    - keeps gradients stable
+    - enables training of very deep networks (ResNets, VGG, etc.)
+
+- why do we need image normalization in neural networks?
+  - neural networks work best when their inputs are well-behaved numeric distributions. 
+  - raw images are not well-behaved:
+    - pixel values are typically 0–255
+    - different channels (R, G, B) have different brightness distributions
+    - variance across channels can differ a lot
+  - normalization fixes these issues.
+  - `norm_pixel[i,j,c] = (pixel[i,j,c] - mean[c]) / std[c]`
+    - mean for R, G, B 
+    - std for R, G, B
+  - benefits:
+    - makes optimization easier (gradient descent becomes stable)
+      - converges faster
+      - less likely to explode or vanish gradients
+    - prevents one channel from dominating others
+      - example: in many datasets, the green channel has higher average intensity than red or blue.
+    - makes training more consistent across images
+      - makes the model focus on actual structure, not brightness differences.
+    - allows pretrained models to work correctly
+      - pretrained models like: ResNet, VGG, EfficientNet
+      - if your input is not normalized with the same values:
+        - performance drops
+        - features don’t match what the model expects
+  - because every image must be individually preprocessed, many practitioners rely on precomputed normalization values to make the process faster and more efficient.
+  ![img_180.png](img_180.png)
+
+- regularization injects randomness during training but removes it during inference.
+  - why?
+    - randomness during training → prevents overfitting
+    - no randomness during testing → stable, deterministic predictions
+    - averaging effect → smoother, more generalizable model
+  ![img_181.png](img_181.png)
+
+- data augmentation: increasing the size of your dataset
+  ![img_182.png](img_182.png)
+  ![img_183.png](img_183.png)
+  ![img_184.png](img_184.png)
+  ![img_185.png](img_185.png)
+  ![img_186.png](img_186.png)
+
+- what if you don't have a lot of data? can you still train a CNNs?
+  - yes, with transfer learning...
+  ![img_187.png](img_187.png)
+  ![img_188.png](img_188.png)
+  ![img_189.png](img_189.png)
+  ![img_190.png](img_190.png)
+
+- guidelines to choose hyperparameters:
+  ![img_191.png](img_191.png)
+  ![img_192.png](img_192.png)
+  ![img_193.png](img_193.png)
+  ![img_194.png](img_194.png)
+  ![img_195.png](img_195.png)
+  - in practice selecting randomly hyperparameters work better than grid-based:
+  - [Random Search for Hyper-Parameter Optimization](https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf)
+  ![img_196.png](img_196.png)
+  
