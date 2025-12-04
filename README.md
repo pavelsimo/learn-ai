@@ -1022,3 +1022,52 @@ they affect the result, but the oven doesn’t set them—you do.
   - [Random Search for Hyper-Parameter Optimization](https://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf)
   ![img_196.png](img_196.png)
   
+- evaluate models and tune hyperparameters
+  ![img_197.png](img_197.png)
+  - https://wandb.ai/site/
+  - https://www.tensorflow.org/tensorboard
+
+- what is a recurrent neural network (RNN)?
+  - a recurrent neural network (RNN) is a type of neural network designed to process sequential data—that is, data where the order of elements matters.
+  - unlike a standard neural network (which only looks at the current input), an RNN has a loop inside it. 
+  - this loop allows the network to remember information from previous steps in the sequence.
+  - so at time step t, an RNN takes:
+    - the current input x<sub>i</sub>
+    - the previous hidden state h<sub>t-1</sub> (its memory)
+  - and produces:
+    - a new hidden state h<sub>t</sub>
+    - and sometimes an output y<sub>t</sub>
+  ![img_203.png](img_203.png)
+  ![img_204.png](img_204.png)
+  ![img_205.png](img_205.png)
+  ![img_206.png](img_206.png)
+  ![img_198.png](img_198.png)
+  ![img_199.png](img_199.png)
+  ![img_200.png](img_200.png)
+  ![img_201.png](img_201.png)
+  ![img_202.png](img_202.png)
+
+- what is vanilla RNN?
+  - a vanilla RNN (also called a simple RNN or Elman RNN) is the most basic form of a recurrent neural network.
+  - it’s the simplest version of an RNN before more advanced architectures like LSTMs and GRUs were invented.
+  - a vanilla RNN computes its hidden state at each timestep using this formula:
+  ![img_207.png](img_207.png)
+
+- what is a “hidden state” in an RNN?
+  - the hidden state h<sub>t</sub> is the internal memory of the RNN at time step t.
+
+- why is it called "hidden"?
+  - the hidden state is called “hidden” because:
+    - it is not provided by the user, is created internally by the network.
+    - it is not directly part of the output.
+    - it represents internal computation / memory.
+    - basically:
+      - ✔ input = visible
+      - ✔ output = visible
+      - ✖ hidden state = internal, not exposed → “hidden”
+
+- manually creating a RNN for detecting repeated 1s:
+  ![img_208.png](img_208.png)
+  ![img_209.png](img_209.png)
+  ![img_210.png](img_210.png)
+  ![img_211.png](img_211.png)
