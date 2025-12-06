@@ -1108,7 +1108,7 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_227.png](img_227.png)
   ![img_228.png](img_228.png)
 
-- applications of RNNs:
+- some applications of RNNs:
   - [Visualizing and Understanding Recurrent Networks”](https://arxiv.org/pdf/1506.02078)
   ![img_229.png](img_229.png) 
   ![img_230.png](img_230.png)
@@ -1117,3 +1117,98 @@ they affect the result, but the oven doesn’t set them—you do.
 
 - RNN tradeoffs:
   ![img_233.png](img_233.png)
+
+- RNN success cases:
+  - image captioning:
+    - [Explain Images with Multimodal Recurrent Neural Networks](https://arxiv.org/pdf/1410.1090)
+    - [Deep Visual-Semantic Alignments for Generating Image Descriptions](https://cs.stanford.edu/people/karpathy/cvpr2015.pdf)
+    - [Show and Tell: A Neural Image Caption Generator](https://arxiv.org/pdf/1411.4555)
+    - [Long-term Recurrent Convolutional Networks for Visual Recognition and Description](https://arxiv.org/pdf/1411.4389)
+    - [Learning a Recurrent Visual Representation for Image Caption Generation](https://arxiv.org/pdf/1411.5654)
+    ![img_234.png](img_234.png)
+    ![img_235.png](img_235.png)
+    ![img_236.png](img_236.png)
+    ![img_237.png](img_237.png)
+    ![img_238.png](img_238.png)
+  - visual question answering (VQA)
+    - [VQA: Visual Question Answering](https://www.iro.umontreal.ca/~agrawal/VQA_ICCV2015.pdf)
+    ![img_239.png](img_239.png)
+  - visual dialog: conversation about images
+    - [Visual Dialog](https://arxiv.org/pdf/1611.08669)
+    ![img_240.png](img_240.png)
+  - visual language navigation: go to the living room
+    - [Reinforced Cross-Modal Matching and Self-Supervised Imitation Learning for Vision-Language Navigation](https://arxiv.org/pdf/1811.10092)
+    ![img_241.png](img_241.png)
+
+- Multilayer RNNs
+  - a Multilayer RNN (also called a stacked RNN) is an RNN architecture where multiple recurrent layers are placed on top of each other, allowing the network to learn more complex temporal patterns.
+  ![img_242.png](img_242.png)
+
+- what is an LSTM?
+  - [LONG SHORT-TERM MEMORY](https://www.bioinf.jku.at/publications/older/2604.pdf)
+  ![img_243.png](img_243.png)
+  ![img_247.png](img_247.png)
+  ![img_248.png](img_248.png)
+  ![img_249.png](img_249.png)
+  ![img_250.png](img_250.png)
+  ![img_251.png](img_251.png)
+  ![img_252.png](img_252.png)
+  ![img_253.png](img_253.png)
+  ![img_254.png](img_254.png)
+  - note this behaviour of skipping layers of LSTM is similar to ResNet!
+  ![img_256.png](img_256.png)
+  - an LSTM (Long Short-Term Memory) is a special type of RNN designed to remember information for long periods of time and to avoid the vanishing gradient problem that affects vanilla RNNs.
+  - this saw a lot of success before the transformer revolution!
+  - a vanilla RNN updates its hidden state like this: h<sub>t</sub> = tanh(W[h<sub>t-1</sub>, x<sub>t</sub>])
+  - gradients often vanish → model “forgets” long-term dependencies
+  - sometimes gradients explode
+  - as a result, vanilla RNNs struggle with sequences longer than ~10–20 steps.
+  - an LSTM introduces gates and a cell state that allow it to store, erase, and control information explicitly.
+  - the LSTM computes:
+    
+    ![img_244.png](img_244.png)
+  
+    - i = input gate
+    - f = forget gate
+    - o = output gate
+    - g = candidate update
+  - then.. the cell updates:
+  
+    ![img_245.png](img_245.png)
+  
+  - and the hidden state is:
+  
+    ![img_246.png](img_246.png)
+  
+  - 🧠 intuition:
+    - think of LSTM as having a memory cell:
+      - **forget gate:** should I erase old memory?
+      - **input gate:** should I store new information?
+      - **cell state:** long-term memory highway
+      - **output gate:** How much memory should I show to the next layer? 
+  - the symbol ⊙ means element-wise multiplication, also called the Hadamard product.
+  - if you have two vectors of the same size:
+  - a=[a<sub>1</sub>,a<sub>2</sub>,a<sub>3</sub>],b=[b<sub>1</sub>,b<sub>2</sub>,b<sub>3</sub>]
+  - a ⊙ b=[a<sub>1</sub>b<sub>1</sub>,a<sub>2</sub>b<sub>2</sub>,a<sub>3</sub>b<sub>3</sub>]
+
+- do LSTMs solve the vanishing gradient problem?
+  - it definitely helps!
+  - the LSTM architecture makes it easier for the RNN to preserve information over many timesteps.
+  - LSTM doesn't guarantee that there is no vanishing/exploding gradient, but it does provide an easier way for the model to learn long-distance dependencies.
+  ![img_255.png](img_255.png)
+
+- Modern RNNs:
+  - unlimited context length! big advantage over transformers...
+  - compute scales linearly with sequence length, contrary to transformers which is quadratic!
+  - an important research question currently is how can you get the performance of transformers with the scale of RNNs
+  - [RWKV: Reinventing RNNs for the Transformer Era](https://arxiv.org/pdf/2305.13048)
+  - [Simplified State Space Layers for Sequence Modeling](https://arxiv.org/pdf/2111.00396)
+  - [Mamba: Linear-Time Sequence Modeling with Selective State Spaces](https://arxiv.org/pdf/2312.00752)
+  ![img_257.png](img_257.png)
+
+- RNNs summary:
+  - RNNs allow a lot of flexibility in architecture design
+  - vanilla RNNs are simple but don't work very well
+  - more complex variants (e.g. LSTMs, Mamba) can introduce ways to selectively pass information forward
+  - backward flow of gradients in RNN can explode or vanish. exploding is controlled with gradient clipping. backpropagation through time is often needed.
+  - better/simpler architectures are a hot topic of current research, as well as new paradigms for reasoning over sequences.
