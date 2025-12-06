@@ -1212,3 +1212,88 @@ they affect the result, but the oven doesn’t set them—you do.
   - more complex variants (e.g. LSTMs, Mamba) can introduce ways to selectively pass information forward
   - backward flow of gradients in RNN can explode or vanish. exploding is controlled with gradient clipping. backpropagation through time is often needed.
   - better/simpler architectures are a hot topic of current research, as well as new paradigms for reasoning over sequences.
+
+- transformers are used everywhere today!
+  - attention and self-attention ideas where born from RNN 
+  ![img_258.png](img_258.png)
+
+- Sequence to Sequence with RNNs
+  - the diagram shows the classic Sequence-to-Sequence (Seq2Seq) model introduced by Sutskever, Vinyals, and Le (2014), used for machine translation, summarization, and many other tasks.
+  - it has two main parts:
+  - 🧠 intuition: the model tries to "compress" the entire first sentence into one vector **c**.
+  - this is a limitation — later solved by attention mechanisms.
+  - 🟦 1. Encoder
+    - input sentence: we → see → the → sky
+    - each word is fed into an RNN (e.g., LSTM or GRU): h<sub>t</sub> = f<sub>W</sub>(x<sub>t</sub>, h<sub>t-1</sub>)
+      - x<sub>t</sub>: input word embedding at time step t
+      - h<sub>t</sub>: hidden state at t
+      - f<sub>W</sub>: the RNN cell
+    - the encoder processes all inputs and produces the final hidden state h<sub>T</sub>
+    - then... the final state becomes
+      - initial decoder state s<sub>0</sub>
+      - context vector c (often equal to h<sub>T</sub>)
+  - 🟥 2. Decoder
+    - goal: produce an output sentence (e.g., translation)
+    - output sentence: vediamo → il → cielo → [STOP]
+    - the decoder is another RNN: s<sub>t</sub> = g<sub>U</sub>(y<sub>t-1</sub>, s<sub>t-1</sub>, c)
+    - so... at each time step the decoder receives:
+      - its previous output token y<sub>t-1</sub>
+      - previous hidden state s<sub>t-1</sub>
+      - the context vector c
+    - and it predicts the next token y<sub>t</sub>
+    ![img_259.png](img_259.png)
+  - [Sequence to Sequence Learning with Neural Networks](https://arxiv.org/pdf/1409.3215)
+  - what is the initial decoder state s0? How is it defined?
+    - s<sub>0</sub> is the decoder's initial hidden state
+    - generally you can initialize both to h<sub>T</sub>, in the original 2014 Seq2Seq model paper that was the case
+    - in modern Seq2Seq models is a design choice and could be done differently...
+  
+  - what does “t” mean in “hidden state at time t”?
+    - in RNNs, t = time step index in the sequence.
+    - t = 1 → we (h<sub>1</sub> is the hidden state after reading “we”) 
+    - t = 2 → see (h<sub>2</sub> is the hidden state after reading “see”)
+    - t = 3 → the (h<sub>3</sub> is the hidden state after reading “the”)
+    - t = 4 → sky (h<sub>4</sub> is the hidden state after reading “sky”)
+    - RNNs process sequences one element at a time, so each step is like a “moment in time.”
+  
+  - what does an RNN cell mean?
+    - an RNN cell is the repeating unit that processes each time step.
+    - mathematically: h<sub>t</sub> = f<sub>W</sub>(x<sub>t</sub>, h<sub>t-1</sub>)
+    - where **f** is some function defined by the RNN architecture.
+    - depending on the model:
+      - simple RNN cell: h<sub>t</sub> = tanh(Wx<sub>t</sub>, Uh<sub>t-1</sub>)
+      - LSTM cell: more complex internal structure (input gate, forget gate, output gate).
+      - GRU cell: simplified version of LSTM (update/reset gates).
+  
+  - what is g<sub>U</sub> in the decoder equation?
+    - for the equation: g<sub>U</sub>(y<sub>t-1</sub>, s<sub>t-1</sub>, c)
+    - g<sub>U</sub> is the RNN cell function used in the decoder.
+    - it takes three inputs:
+      - the previous output token y<sub>t-1</sub>
+      - the previous decoder hidden state s<sub>t-1</sub>
+      - the context vector c
+    - it outputs:
+      - the new decoder hidden state s<sub>t</sub>
+
+- what is the problem with the context vector c?
+  - the entire input sequence is compressed into a single vector c.
+  - that means:
+    - no matter if the input is 5 words or 500 words
+    - the encoder outputs one fixed-size vector
+    - the decoder must rely only on this vector to generate the entire output sequence
+  - this creates a severe information bottleneck!!
+  - 🚨 problem 1: fixed-size vector cannot store long sequences
+    - this is like compressing an entire book into a single sentence and expecting someone to recreate the book from that sentence.
+  - 🚨 problem 2: long-range dependencies are lost
+    - the encoder will tend to forget early parts of the sentence.
+  - 🚨 problem 3: decoder has no access to individual encoder states
+    - the decoder see only **c**, it does not see h<sub>1</sub>, h<sub>2</sub>, h<sub>3</sub>
+    - so it can't selectively focus on important parts of the input
+    - human analogy: you read an entire paragraph and then someone takes the text away and asks you to translate it from memory.
+  - 🚨 problem 4: performance collapses as sentence length increases
+    - Seq2Seq works well for short sentences (5–15 words)
+    - performance drops sharply for long sentences (>30 words)
+  - 📌 in summary: the context vector c is a bottleneck because it forces the whole input sequence into a fixed-size vector, 
+  - which cannot hold detailed information for long sequences or complex relationships.
+  ![img_260.png](img_260.png)
+  ![img_261.png](img_261.png)
