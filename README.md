@@ -159,7 +159,6 @@ This is sometimes called class-agnostic segmentation.
   - [SlimSAM-uniform-77](https://huggingface.co/Zigeng/SlimSAM-uniform-77)
   ![img_13.png](img_13.png)
 
-
 ### 2. Stanford CS231N
 
 - [Python Numpy Tutorial](https://cs231n.github.io/python-numpy-tutorial)
@@ -1071,3 +1070,50 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_209.png](img_209.png)
   ![img_210.png](img_210.png)
   ![img_211.png](img_211.png)
+
+- key idea for the loss:
+  - when the model outputs a sequence, you compute a loss at every output.
+  - when the model outputs one prediction, you compute only one loss.
+  - all losses are summed together and backpropagated through time.
+  ![img_213.png](img_213.png)
+  ![img_212.png](img_212.png)
+  ![img_214.png](img_214.png)
+  ![img_215.png](img_215.png)
+  ![img_216.png](img_216.png)
+  ![img_217.png](img_217.png)
+  ![img_218.png](img_218.png)
+
+- Backpropagation Through Time (BPTT)
+  - compute outputs and losses for all time steps in the sequence.
+  - sum all losses into one total loss.
+  - backpropagate the gradient through the entire sequence (from last step to first).
+  - accurate but slow, memory-heavy, and prone to vanishing/exploding gradients.
+  ![img_219.png](img_219.png)
+
+- Truncated Backpropagation Through Time (TBPTT)
+  - forward pass runs through the whole sequence normally.
+  - but gradients are only backpropagated through a small window of recent steps.
+  - faster and more stable, but gives only an approximate gradient.
+  - still allows long-term information to flow via hidden states.
+  ![img_220.png](img_220.png)
+  ![img_221.png](img_221.png)
+  ![img_222.png](img_222.png)
+
+- a practical example to predict language using RNNs:
+  - [Minimal character-level language model with a Vanilla Recurrent Neural Network, in Python/numpy](https://gist.github.com/karpathy/d4dee566867f8291f086)
+  ![img_223.png](img_223.png)
+  ![img_224.png](img_224.png)
+  ![img_225.png](img_225.png)
+  ![img_226.png](img_226.png)
+  ![img_227.png](img_227.png)
+  ![img_228.png](img_228.png)
+
+- applications of RNNs:
+  - [Visualizing and Understanding Recurrent Networks”](https://arxiv.org/pdf/1506.02078)
+  ![img_229.png](img_229.png) 
+  ![img_230.png](img_230.png)
+  ![img_231.png](img_231.png)
+  ![img_232.png](img_232.png)
+
+- RNN tradeoffs:
+  ![img_233.png](img_233.png)
