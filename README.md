@@ -1297,3 +1297,184 @@ they affect the result, but the oven doesn’t set them—you do.
   - which cannot hold detailed information for long sequences or complex relationships.
   ![img_260.png](img_260.png)
   ![img_261.png](img_261.png)
+
+
+- now we add "attention":
+  - [Neural machine translation by jointly learning to align and translate](https://arxiv.org/pdf/1409.0473) 
+  - aren’t we still producing a single vector? how is this different from producing one context vector?
+    - before there was one context vector for the entire output sequence, it never changed.
+    - this single vector had to encode EVERYTHING about the input.
+    - with attention there is a new context vector for every decoder step: c<sub>1</sub>, c<sub>2</sub>, c<sub>3</sub> ... c<sub>T</sub> 
+    - each c<sub>t</sub>:
+      - is created differently
+      - depends on what the decoder is currently trying to output
+      - uses all encoder states, not just the last one
+    - 🧠 intuition:
+      - before attention: you read a paragraph → someone takes it away → you translate everything from memory.
+      - with attention: you read a paragraph → you can look back at any word whenever you want while translating.
+  - what are alignment scores e<sub>t</sub><sub>i</sub>?
+    - they measure how relevant encoder state h<sub>i</sub> s to generating the next decoder word at time t.
+  - how are attention weights a<sub>t</sub><sub>i</sub> computed?
+    - softmax normalizes the scores so they sum to 1 and behave like probabilities.
+  - does the decoder only use the highest-weight encoder state?
+    - no, attention uses the full weighted sum — not just the top one.
+  - what does it mean to “attend” to a word?
+    - the attention weight for that word is highest, so it influences the output most strongly.
+  - how attention blends information?
+    - imagine blending colors:
+      - 64% red 
+      - 24% blue 
+      - 8% yellow 
+      - 3% green 
+    - the final color is mostly red, but still influenced by all colors. 
+    - attention works exactly like this — a **soft blend**, not a hard choice.
+  - why not pick only the max-weight encoder state?
+    - that would be hard attention, which is not differentiable. soft attention allows smooth training by backpropagation.
+  - what is “hard attention”?
+    - instead of computing a soft weighted sum over all encoder states...
+    - the model chooses exactly one encoder state based on the highest score.
+    - it is like doing argmax!
+    - argmax is not differentiable.
+    - argmax outputs a discrete integer (0, 1, 2, 3...)
+    - the sudden jumps in argmax mean you cannot compute a smooth gradient.
+    - that is why instead of argmax, soft attention uses softmax, which is differentiable!
+    - 🎨 analogy:
+      - hard attention is like a light switch:
+        - on/off 
+        - sudden jumps 
+        - no smooth change → no gradient
+      - soft attention is like a dimmer knob:
+        - smooth transitions
+        - you can compute how much to adjust it
+        - gradients make sense
+  ![img_262.png](img_262.png)
+  ![img_263.png](img_263.png)
+  ![img_264.png](img_264.png)
+  ![img_265.png](img_265.png)
+  ![img_266.png](img_266.png)
+  ![img_267.png](img_267.png)
+  ![img_268.png](img_268.png)
+  ![img_269.png](img_269.png)
+
+
+- generalizing the attention layer:
+  ![img_270.png](img_270.png)
+  ![img_271.png](img_271.png)
+  - think of the attention Layer not as a math equation, but as a information retrieval system—like a highly specific Google search or a library filing system.
+    - query (Q) = your search question
+    - keys (K) = titles of documents
+    - values (V) = the actual content of those documents 
+  - 🟦 STEP 1 — Inputs
+    - Query vector: Q
+      - What am I trying to find?
+    - Data vectors: X
+      - the set of things you want to look through (in Transformers: the input tokens as word embeddings)
+    - Key matrix W<sub>k</sub>
+    - Value matrix W<sub>v</sub>
+  - 🟥 STEP 2 — Compute Keys and Values
+    - transform the input data X:
+      - K = XW<sub>K</sub>
+      - V = XW<sub>V</sub>
+      - $\mathbf{W}_{K}$ and $\mathbf{W}_{V}$ are the parameters (weights) that the neural network learns during training.
+    - this lets the network learn what makes a good "label" vs. good "content":
+      - say your input X is word embeddings — each word is just a vector of numbers that captures "what this word means" in some general sense.
+      - but for attention to work well, you need two different things:
+        - something good for comparison — "does this match what I'm looking for?"
+        - something good for output — "what information should I actually pass forward?"
+      - these are different jobs! There's no reason the same vector should be optimal for both.
+      - so when you compute the products:
+        - K = XW<sub>K</sub>
+        - V = XW<sub>V</sub>
+      - you're creating two different transformations of the same input.
+        - W<sub>K</sub> learns: "What features of this word make it a good match target?"
+          - 🧠 intuition: earns how to write good labels on the folders (so you can find the right one)
+        - W<sub>V</sub> learns: "What information should this word contribute when it's attended to?"
+          - 🧠 intuition: learns how to write good summaries inside the folders (so you get useful info when you open it).
+    - 🟩 STEP 3 — Compute Similarity (Query vs Keys)
+      - the layer takes a Query vector ($Q$)—which represents what the model is currently focusing on—and compares it to every Key ($K$) using a mathematical "dot product."
+      - $E = QK^T$
+    - 🟨 STEP 4 — Softmax → Attention Weights
+      - the raw scores from the matching game can be messy numbers. 
+      - the Softmax function (the box in the middle) turns these scores into probabilities (percentages) that add up to 100%.
+      - These are the Attention Weights ($A$) or $a_{11}, a_{12}$... in the diagram.
+    - 🟪 STEP 5 — Weighted Sum of Values
+      - finally, the model creates the output by mixing the values ($V$) based on those percentages.
+      - it takes 80% of the mathematical meaning of "sky", adds 15% of "blue", etc.
+      - the result is a new vector ($Y$) that represents the most relevant information for the current context.
+  
+  - what is the difference between the Query ($Q$ ) and the Data Vectors ($X$)?
+    - $X$ is the raw input. 
+    - So really: $Q = (some input) · W_{Q}$
+  
+  - what is a cross-attention layer?
+    - a cross-attention layer is a type of neural network layer that operates on two distinct sets of inputs
+    - both data vectors ($X$) and query vectors ($Q$) that potentially came from two different places.
+    ![img_272.png](img_272.png)
+
+  - what is a self-attention layer?
+    - here we no longer have the separation between data vectors ($X$) and query vectors ($Q$)
+    - we just have input vectors ($X$)
+    ![img_273.png](img_273.png)
+    ![img_274.png](img_274.png)
+    - concatenating matrix multiplies
+      - is typically more efficient in hardware to do fewer large matrix multiplies, 
+      - than is it is to do more small matrix multiplies
+  
+  - how to solve the issue when self-attention does know the order of the sequence?
+    - add positional encoding to each input, this is a vector that is a fixed function of the index 
+    ![img_275.png](img_275.png)
+
+  - what is "masked" self-attention layer?
+    - a masked self-attention layer is a special version of self-attention where some positions are not allowed to see (attend to) future information.   
+    - override similarities with -inf; this controls which inputs each vector is allowed to look at.
+    ![img_276.png](img_276.png)
+    - why do we need masked self-attention?
+      - because autoregressive models generate one token at a time:
+      - when generating token #10, → the model must not look at token #11.
+      - this ensures the model learns to predict the next token using only past context.
+
+  - what is multiheaded self-attention layer?
+    - a multi-headed self-attention layer is just many self-attention mechanisms running in parallel,
+    - important: nowadays once you see self-attention used, is almost always "multiheaded self-attention"
+    - each looking at the input in a different way, and then combining their findings. 
+    - it’s one of the core ideas that makes Transformers powerful.
+      - 🧠 intuition:
+        - imagine you examine a scene using different specialists:
+          - head #1: A detective → Looks for cause–effect relations
+          - head #2: A poet → Looks at emotional tone
+          - head #3: A scientist → Examines numerical patterns
+    - why multiple heads?
+      - because different heads naturally learn to extract different types of relationships.
+      - observed in real models:
+        - head 3 focuses on subject–verb relationships
+        - head 7 tracks matching brackets or quotes
+        - head 11 follows long-range dependencies
+    ![img_277.png](img_277.png)
+
+  - self-attention is just four matrix multiplies!
+    ![img_278.png](img_278.png)
+  
+  - three ways of processing sequences:
+    ![img_279.png](img_279.png)
+    - [Attention Is All You Need](https://arxiv.org/pdf/1706.03762)
+    ![img_280.png](img_280.png)
+
+  - what is the transformer?
+    ![img_284.png](img_284.png)
+    ![img_285.png](img_285.png)
+    ![img_286.png](img_286.png)
+    ![img_287.png](img_287.png)
+    ![img_288.png](img_288.png)
+    ![img_289.png](img_289.png)
+    ![img_290.png](img_290.png)
+    ![img_291.png](img_291.png)
+    ![img_292.png](img_292.png)
+    ![img_293.png](img_293.png)
+    ![img_294.png](img_294.png)
+    ![img_295.png](img_295.png)
+    ![img_281.png](img_281.png)
+    ![img_282.png](img_282.png)
+    ![img_283.png](img_283.png)
+
+- transformers are the backbone of all large AI models today!
+  ![img_296.png](img_296.png)
