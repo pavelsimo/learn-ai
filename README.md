@@ -154,10 +154,25 @@
 - what is end-to-end object detection? end-to-end object detection refers to object-detection systems where the entire process — from input image → bounding boxes + object labels — is learned and optimized in one unified neural network, without needing hand-crafted components or multi-stage pipelines.
   - [DETR (End-to-End Object Detection) model with ResNet-50 backbone](https://huggingface.co/facebook/detr-resnet-50)
   ![sample_od.png](data/sample_od.png)
+
 - what is segmentation mask generation? is a computer-vision task where an AI model produces a pixel-accurate outline (mask) of objects in an image — without necessarily identifying what the object is.
 This is sometimes called class-agnostic segmentation.
   - [SlimSAM-uniform-77](https://huggingface.co/Zigeng/SlimSAM-uniform-77)
+  - [0.1% Data Makes Segment Anything Slim](https://arxiv.org/pdf/2312.05284)
   ![img_13.png](img_13.png)
+  ![sample_mask.png](data/sample_mask.png)
+  - note SAM output 3 image masks!
+  ![img_297.png](img_297.png)
+  - SAM with a single point:
+  ![sample_mask.png](data/sample_mask_2.png)
+
+- what is depth estimation?
+  - [Vision Transformers for Dense Prediction](https://arxiv.org/pdf/2103.13413)
+  - DPT stands for dense prediction 
+  - DPT is a model that you can use to perform depth estimation given an image
+  - depth estimation is a common task in computer vision.
+  - commonly use in autonomous driving
+  - [Intel/dpt-hybrid-midas](https://huggingface.co/Intel/dpt-hybrid-midas)
 
 ### 2. Stanford CS231N
 
@@ -1356,7 +1371,6 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_268.png](img_268.png)
   ![img_269.png](img_269.png)
 
-
 - generalizing the attention layer:
   ![img_270.png](img_270.png)
   ![img_271.png](img_271.png)
@@ -1460,6 +1474,13 @@ they affect the result, but the oven doesn’t set them—you do.
     ![img_280.png](img_280.png)
 
   - what is the transformer?
+    - [Language Models are Unsupervised Multitask Learners (GPT-2)](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf)
+    - [Language Models are Few-Shot Learners (GPT-3)](https://arxiv.org/pdf/2005.14165)
+    - [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/pdf/2010.11929)
+    - [Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer](https://arxiv.org/pdf/1701.06538)
+    - [GLU Variants Improve Transformers](https://arxiv.org/pdf/2002.05202)
+    - [Root Mean Square Layer Normalization](https://arxiv.org/pdf/1910.07467)
+    - [Adaptive Input Representations for Neural Language Modeling](https://arxiv.org/pdf/1809.10853)
     ![img_284.png](img_284.png)
     ![img_285.png](img_285.png)
     ![img_286.png](img_286.png)
