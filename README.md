@@ -1499,3 +1499,7 @@ they affect the result, but the oven doesn’t set them—you do.
 
 - transformers are the backbone of all large AI models today!
   ![img_296.png](img_296.png)
+
+- vision transformers (ViT)
+  ![img_298.png](img_298.png)
+  ![img_299.png](img_299.png)
