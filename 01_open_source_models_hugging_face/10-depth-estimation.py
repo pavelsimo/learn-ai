@@ -44,4 +44,4 @@ if __name__ == '__main__':
     depth_map = prediction.squeeze().cpu().numpy()
 
     # Visualize and save
-    show_depth_map(raw_image, depth_map, output_path=output_path, show_original=False)
+    show_depth_map(raw_image, depth_map, output_path=output_path, show_original=False, show_colorbar=False)

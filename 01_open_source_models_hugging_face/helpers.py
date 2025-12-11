@@ -85,7 +85,7 @@ def show_mask_on_image(raw_image, mask, output_path=None, return_image=False, sh
     return result_image
 
 
-def show_depth_map(raw_image, depth_map, output_path=None, return_image=False, colormap='inferno', show_original=True):
+def show_depth_map(raw_image, depth_map, output_path=None, return_image=False, colormap='inferno', show_original=True, show_colorbar=False):
     """
     Display or save a depth map visualization.
 
@@ -97,6 +97,7 @@ def show_depth_map(raw_image, depth_map, output_path=None, return_image=False, c
         colormap: Matplotlib colormap name (default: 'inferno')
         show_original: If True, display side-by-side (original + depth);
                       If False, display depth map only (default: True)
+        show_colorbar: If True, display the colorbar scale legend (default: False)
 
     Returns:
         PIL Image if return_image=True, otherwise None
@@ -137,15 +138,15 @@ def show_depth_map(raw_image, depth_map, output_path=None, return_image=False, c
 
     # Show depth map with colormap (works for both modes)
     im = depth_ax.imshow(depth_normalized, cmap=colormap)
-    depth_ax.set_title("Depth Map")
     depth_ax.axis("off")
 
-    # Add colorbar
-    plt.colorbar(im, ax=depth_ax, fraction=0.046, pad=0.04)
+    # Add colorbar if requested
+    if show_colorbar:
+        plt.colorbar(im, ax=depth_ax, fraction=0.046, pad=0.04)
 
     # Save or display
     if output_path:
-        plt.savefig(output_path, bbox_inches='tight', pad_inches=0.1)
+        plt.savefig(output_path, bbox_inches='tight', pad_inches=0)
         print(f"Saved depth map to: {output_path}")
     else:
         plt.show()

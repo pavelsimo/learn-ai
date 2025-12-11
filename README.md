@@ -174,7 +174,28 @@ This is sometimes called class-agnostic segmentation.
   - commonly use in autonomous driving
   - [Intel/dpt-hybrid-midas](https://huggingface.co/Intel/dpt-hybrid-midas)
 
-### 2. Stanford CS231N
+- what are multimodal models? 
+  - when a task requires a model to be able to take as an input more than one type of data, 
+  - let's say an image and a sentence, we'll call it multimodal.
+  ![img_300.png](img_300.png)
+
+- what are some common multimodal tasks?
+  - image captioning
+  - image to text matching
+  - visual Q&A
+  - zero-shot image classification
+
+- image - text retrieval
+  - [Salesforce/blip-itm-base-coco](https://huggingface.co/Salesforce/blip-itm-base-coco)
+  ![img_301.png](img_301.png)
+
+- image - captioning
+  - [Salesforce/blip-image-captioning-base](https://huggingface.co/Salesforce/blip-image-captioning-base)
+
+### 2. Attention in Transformers: Concepts and Code in PyTorch
+
+
+### 3. Stanford CS231N
 
 - [Python Numpy Tutorial](https://cs231n.github.io/python-numpy-tutorial)
 - [Repository](https://github.com/cs231n/cs231n.github.io)
