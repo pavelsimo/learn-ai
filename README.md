@@ -1524,3 +1524,98 @@ they affect the result, but the oven doesn’t set them—you do.
 - vision transformers (ViT)
   ![img_298.png](img_298.png)
   ![img_299.png](img_299.png)
+
+- common computer vision tasks
+  ![img_302.png](img_302.png)
+  - classification
+  - semantic segmentation
+    - for each training image, each pixel is labeled with a semantic category.
+    ![img_303.png](img_303.png)
+    ![img_304.png](img_304.png)
+    ![img_305.png](img_305.png)
+    ![img_306.png](img_306.png)
+    ![img_307.png](img_307.png)
+    ![img_308.png](img_308.png)
+    ![img_309.png](img_309.png)
+    ![img_310.png](img_310.png)
+    ![img_311.png](img_311.png)
+  - object detection
+  - instance segmentation
+  
+- what are classic CNNs are naturally good at?
+  - classic CNNs were designed for image classification:
+  - “is there a cat in this image?”
+  - for that task:
+  - exact pixel location doesn’t matter
+  - “cat anywhere” is good enough!
+  - so when this becomes a problem?
+  - some tasks are not just “what”, but what + where:
+  - for example:
+    - semantic segmentation → label every pixel
+    - depth estimation → predict depth per pixel
+    - optical flow → motion per pixel
+    - autoencoders → reconstruct the image
+  - these tasks need:
+    - high-level meaning (from deep layers)
+    - original spatial resolution
+  - but pooling destroyed spatial detail!!
+
+- so... why “unpooling” is needed at all?
+  - in CNNs we often downsample feature maps using:
+  - max pooling 
+  - strided convolutions
+  - this reduces spatial size (e.g. 4×4 → 2×2) and keeps strong features, but it throws away spatial detail.
+  - when we later want to:
+    - reconstruct an image,
+    - predict a per-pixel output (segmentation, depth, etc.),
+    - we must upsample again.
+    - that’s where unpooling / upsampling comes in.
+  - network upsampling (“Unpooling”) 
+    ![img_312.png](img_312.png)
+  - max unpooling 
+    - during max pooling, the network remembers where each max came from (indices).
+    - these are called pooling indices or argmax positions.
+    ![img_313.png](img_313.png)
+  ![img_314.png](img_314.png)
+
+- U-Net
+  - state of the art results for segmentation
+  - [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/pdf/1505.04597)
+    ![img_315.png](img_315.png)
+  - "downsampling" phase
+    - increases field of view
+    - lose spatial information
+    ![img_316.png](img_316.png)
+  - "upsampling" phase
+    - go back to the original image resolution
+    ![img_317.png](img_317.png)
+
+- why we need to downsample for semantic segmentation?
+  - semantic segmentation asks:
+    - “what class does this pixel belong to?”
+    - but a pixel alone is meaningless.
+    - a single pixel could be:
+      - part of a road 
+      - part of a wall 
+      - part of a car 
+      - shadow 
+      - noise
+    - you cannot classify a pixel without seeing its neighborhood.
+  - so...
+  - we use downsampling as a mechanism for rapidly increasing the receptive field, 
+  - i.e. for collecting context. 
+
+- what are the issues with semantic segmentation?
+  - don't differentiate instances, only care about pixels (e.g. cow, tree)
+  ![img_318.png](img_318.png)
+
+- the previous is why we need "instance segmentation"
+  - there are cases when we must distinguish different instances  
+  ![img_319.png](img_319.png)
+  ![img_320.png](img_320.png)
+
+- object detection
+  ![img_321.png](img_321.png)
+  ![img_322.png](img_322.png)
+  ![img_323.png](img_323.png)
+  ![img_324.png](img_324.png)
