@@ -1619,3 +1619,11 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_322.png](img_322.png)
   ![img_323.png](img_323.png)
   ![img_324.png](img_324.png)
+  ![img_325.png](img_325.png)
+  - all these methods existed because early detectors (R-CNN era) had no efficient way to answer:
+    - [Selective Search for Object Recognition](http://www.huppelen.nl/publications/selectiveSearchDraft.pdf)
+    - [Measuring the Objectness of Image Windows](https://calvin-vision.net/wp-content/uploads/Publications/alexe12pami.pdf)
+    - [BING: Binarized Normed Gradients for Objectness Estimation at 300fps](https://mmcheng.net/mftp/Papers/ObjectnessBING.pdf)
+    - [Edge Boxes: Locating Object Proposals from Edges](https://pdollar.github.io/files/papers/ZitnickDollarECCV14edgeBoxes.pdf)
+  - “where might objects be?”
+  - they were later replaced by: RPNs (Faster R-CNN), Anchor-based detectors and Transformer-based detectors (DETR)
