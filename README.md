@@ -1627,3 +1627,52 @@ they affect the result, but the oven doesn’t set them—you do.
     - [Edge Boxes: Locating Object Proposals from Edges](https://pdollar.github.io/files/papers/ZitnickDollarECCV14edgeBoxes.pdf)
   - “where might objects be?”
   - they were later replaced by: RPNs (Faster R-CNN), Anchor-based detectors and Transformer-based detectors (DETR)
+  ![img_326.png](img_326.png)
+  - [Rich Feature Hierarchies for Accurate Object Detection and Semantic Segmentation](https://arxiv.org/pdf/1311.2524)
+
+- fast R-CNN
+  - [Faster R-CNN](https://arxiv.org/pdf/1506.01497)
+  - step 1: generate region proposals (external)
+  - step 2: run the CNN ONCE on the full image
+    - the image becomes a grid of deep features (edges, textures, parts).
+  - step 3: map each RoI onto the feature map
+    - ⚠️ no pixel cropping here — only feature cropping.
+  - step 4: RoI Pooling (Crop + Resize features)
+  - step 5: Per-RoI fully connected network
+    - produces two outputs:
+      - (a) Classification
+      - (b) Bounding box regression: (dx, dy, dw, dh)
+  - step 6: Apply box regression
+    - boxes become tighter and better aligned with objects
+  - step 7: post-processing
+    - keep the "best" boxes
+  ![img_327.png](img_327.png)
+  ![img_328.png](img_328.png)
+
+- the problem with the algorithm above is that we need to do this manual bounding box region proposal step...
+- so what is the alternative?
+- region proposal network (RPN):
+  ![img_329.png](img_329.png)
+  ![img_330.png](img_330.png)
+  ![img_331.png](img_331.png)
+
+- single-stage object detectors: YOLO / SSD / RetinaNet
+  - YOLO: Grid-based detection, end-to-end
+    - [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/pdf/1506.02640)
+    - [YOLO9000: Better, Faster, Stronger](https://arxiv.org/pdf/1612.08242)
+    - [YOLOv3: An Incremental Improvement](https://arxiv.org/pdf/1804.02767)
+    ![img_334.png](img_334.png)
+    ![img_335.png](img_335.png)
+    ![img_336.png](img_336.png)
+    ![img_337.png](img_337.png)
+  - SSD: Multi-scale anchors, better small objects
+    - [SSD: Single Shot MultiBox Detector](https://arxiv.org/pdf/1512.02325)
+  - RetinaNet: Focal loss for dense predictions
+    - [RetinaNet: Focal Loss for Dense Object Detection](https://arxiv.org/pdf/1708.02002)
+    ![img_332.png](img_332.png)
+    ![img_333.png](img_333.png)
+  - Object Detection with Transfomers: DETR
+    - DETR was the first object detector to frame detection as a direct set prediction problem using a Transformer.
+    - [End-to-End Object Detection with Transformers](https://arxiv.org/pdf/2005.12872)
+    ![img_338.png](img_338.png)
+    ![img_339.png](img_339.png)
