@@ -1771,8 +1771,86 @@ they affect the result, but the oven doesn’t set them—you do.
   - single frame CNN:
   ![img_365.png](img_365.png)
   - late fusion
+    - understand each frame independently, then combine the information at the very end.
+    - intuition:
+      - first: what is in each image?
+      - later: given all those images, what is the video about?
+    - how it works?
+      - step 1: input video:
+        - T × 3 × H × W (T frames)
+      - step 2: Run the same 2D CNN on each frame independently
+        - → each frame becomes a feature map:
+        - D × H′ × W′
+      - step 3: stack features from all frames:
+        - T × D × H′ × W′
+      - step 4: flatten everything into one long vector
+      - step 5: feed into an MLP (fully connected layers)
+      - step 6: output: class scores C
+    - strengths:
+      - simple and easy to implement
+      - can reuse strong image CNNs (ImageNet pretrained)
+      - works reasonably well when appearance dominates (e.g., “playing guitar”, “swimming”)
+    - weaknesses
+      - ❌ No real motion modeling
+      - temporal order is mostly ignored
+      - very large FC layers → many parameters
+      - sensitive to number of frames
     - [Large-scale Video Classification with Convolutional Neural Networks](https://arxiv.org/pdf/1406.2199)
     - late fusion classifies videos by extracting CNN features per frame and combining them at the end with fully connected layers.
+  - early fusion:
+    - let the network compare frames as early as possible.
+    - instead of waiting until the end, fuse time at the first convolution.
+    - how it works?
+      - step 1: stack frames along channels:
+        - input reshaped from
+        - T × 3 × H × W → (3T) × H × W
+      - first convolution operates across time + color
+      - output becomes a standard 2D feature map
+      - rest of the network is a normal 2D CNN
+    - strengths
+      - motion can be captured at pixel level
+      - simple extension of 2D CNNs
+      - better than late fusion for motion
+    - weaknesses
+      - ❌ Temporal modeling happens only once
+      - later layers lose temporal awareness
+      - fixed number of frames required
+      - still limited for complex actions
+  - 3D CNN
+    - treat time as a first-class dimension — like height and width.
+    - this is the true spatiotemporal model.
+    - how it works?
+      - step 1: input
+        - 3 × T × H × W
+      - step 2: use 3D convolutions
+        - Kernel size: (kT × kH × kW)
+      - step 3: every layer processes
+        - motion
+        - appearance
+        - spatial structure
+      - step 4: pooling also happens in time
+      - step 5: output class scores
+    - strengths:
+      - ✅ explicit motion modeling
+      - learns temporal patterns hierarchically
+      - strong performance on action recognition
+    - weaknesses
+      - very expensive (compute + memory)
+      - needs large datasets
+      - harder to pretrain
+      - fixed temporal resolution
+  - [3D Convolutional Neural Networks for Human Action Recognition](#)
   ![img_366.png](img_366.png)
   ![img_367.png](img_367.png)
-
+  ![img_368.png](img_368.png)
+  ![img_369.png](img_369.png)
+  ![img_370.png](img_370.png)
+  
+  - summary
+  
+  | Method                | Motion modeling | Complexity  | Strength              |
+  | --------------------- | --------------- | ----------- | --------------------- |
+  | Late Fusion (FC)      | ❌ None          | High params | Simple baseline       |
+  | Late Fusion (Pooling) | ❌ None          | Low         | Efficient             |
+  | Early Fusion          | ⚠️ Weak         | Medium      | Captures short motion |
+  | 3D CNN                | ✅ Strong        | Very High   | Best classical CNN    |
