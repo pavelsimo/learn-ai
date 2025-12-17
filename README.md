@@ -1648,6 +1648,7 @@ they affect the result, but the oven doesn’t set them—you do.
     - keep the "best" boxes
   ![img_327.png](img_327.png)
   ![img_328.png](img_328.png)
+  
 
 - the problem with the algorithm above is that we need to do this manual bounding box region proposal step...
 - so what is the alternative?
@@ -1676,3 +1677,74 @@ they affect the result, but the oven doesn’t set them—you do.
     - [End-to-End Object Detection with Transformers](https://arxiv.org/pdf/2005.12872)
     ![img_338.png](img_338.png)
     ![img_339.png](img_339.png)
+
+- what is zero-shot learning?
+  - a model can recognize or perform a task on classes it has never seen during training.
+  - normal (supervised) learning:
+    - train on: 🐶 dog, 🐱 cat
+    - test on: 🐶 dog, 🐱 cat
+    - ✅ Works
+  - zero-shot learning
+    - train on: 🐶 dog, 🐱 cat
+    - test on: 🦓 zebra
+    - ✅ Still works — without ever seeing a zebra before
+  - Instead of learning classes, the model learns concepts.
+
+- instance segmentation:
+  - [Mask R-CNN](https://arxiv.org/pdf/1703.06870) 
+  - for instance segmentation we add a small mask network that operates 
+  - on each RoI and predicts 28x28 binary mask
+    ![img_340.png](img_340.png)
+    ![img_341.png](img_341.png)
+    ![img_342.png](img_342.png)
+    ![img_343.png](img_343.png)
+    ![img_344.png](img_344.png)
+    ![img_345.png](img_345.png)
+    ![img_346.png](img_346.png)
+  
+- visualizing networks:
+  - linear classifier:
+  ![img_347.png](img_347.png)
+  - CNN:
+  ![img_348.png](img_348.png)
+  - saliency maps:
+    - [Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps](https://arxiv.org/pdf/1312.6034)
+    - this paper introduced saliency maps, answering exactly the question on your slide:
+    - “which pixels matter for this prediction?”
+    - key idea:
+      - compute the gradient of the class score with respect to the input image
+      - large gradients ⇒ pixels that strongly influence the prediction
+    ![img_349.png](img_349.png)
+    ![img_350.png](img_350.png)
+  - class activation mapping (CAM)
+    - [Learning Deep Features for Discriminative Localization](https://arxiv.org/pdf/1512.04150)
+    - this paper introduced Class Activation Mapping (CAM), which allows you to:
+      - identify which image regions contribute most to a class prediction
+      - do weakly supervise localization
+      - visualize attention without bounding-box annotations
+      - how CAM works?
+        - CAM highlights image regions by weighting the last convolutional feature maps with the class-specific classifier weights.
+    ![img_351.png](img_351.png)
+    ![img_352.png](img_352.png)
+    ![img_353.png](img_353.png)
+    ![img_354.png](img_354.png)
+    ![img_355.png](img_355.png)
+  - gradient-weighted class activation mapping (Grad-CAM)
+    - [Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization](https://arxiv.org/pdf/1610.02391)
+    - generalizes CAM to any CNN architecture
+    - works without architectural constraints (no need for GAP)
+    - uses gradients to compute class-specific importance
+    - produces coarse but semantically meaningful heatmaps
+    ![img_356.png](img_356.png)
+    ![img_357.png](img_357.png)
+  - visualizing ViT features
+     - ViT are image models that use transformers (attention) instead of convolutions as the main computation.
+     - a Vision Transformer treats an image like a sequence of tokens (patches) and uses self-attention to relate all parts of the image.
+       - step 1: split the image into patches
+       - step 2: turn patches into vectors (embeddings)
+       - step 3: add positional information
+       - step 4: feed patches into a Transformer encoder
+       - step 5: classification token (optional)
+    - [When Vision Transformers Outperform ResNets Without Pretraining or Strong Data Augmentations](https://arxiv.org/pdf/2106.01548)
+    - [Robustness & interpretability of ViTs](https://arxiv.org/pdf/2105.14030)
+    ![img_358.png](img_358.png)
