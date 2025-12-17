@@ -1748,3 +1748,31 @@ they affect the result, but the oven doesn’t set them—you do.
     - [When Vision Transformers Outperform ResNets Without Pretraining or Strong Data Augmentations](https://arxiv.org/pdf/2106.01548)
     - [Robustness & interpretability of ViTs](https://arxiv.org/pdf/2105.14030)
     ![img_358.png](img_358.png)
+
+- what is video? 
+  - 2d images + time
+  ![img_359.png](img_359.png)
+
+- video classification:
+  - in videos is more common to classify by "actions" instead of "classes"
+  - videos are big!
+    - ~30 frames per second (fps)
+    - size of uncompressed video (3 bytes per pixel) 
+    - SD (640x480) ~ 1.5 GB per minute
+    - HD (1920x1080) ~ 10 GB per minute
+    - what is the solution?
+      - train on short clips: low fps and low spatial resolution
+        - 3.2 seconds at 5fps, 588 KB
+  ![img_360.png](img_360.png)
+  ![img_361.png](img_361.png)
+  ![img_362.png](img_362.png)
+  ![img_363.png](img_363.png)
+  ![img_364.png](img_364.png)
+  - single frame CNN:
+  ![img_365.png](img_365.png)
+  - late fusion
+    - [Large-scale Video Classification with Convolutional Neural Networks](https://arxiv.org/pdf/1406.2199)
+    - late fusion classifies videos by extracting CNN features per frame and combining them at the end with fully connected layers.
+  ![img_366.png](img_366.png)
+  ![img_367.png](img_367.png)
+
