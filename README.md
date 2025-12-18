@@ -1846,6 +1846,10 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_369.png](img_369.png)
   ![img_370.png](img_370.png)
   
+  - convolution in early fusion vs late fusion vs 3D CNN
+  ![img_373.png](img_373.png)
+  ![img_374.png](img_374.png)
+
   - summary
   
   | Method                | Motion modeling | Complexity  | Strength              |
@@ -1854,3 +1858,10 @@ they affect the result, but the oven doesn’t set them—you do.
   | Late Fusion (Pooling) | ❌ None          | Low         | Efficient             |
   | Early Fusion          | ⚠️ Weak         | Medium      | Captures short motion |
   | 3D CNN                | ✅ Strong        | Very High   | Best classical CNN    |
+
+
+- 2d convolution
+  ![img_371.png](img_371.png)
+- 3d convolution
+  - FC layer: Fully Connected layer (also called a Dense layer).
+  ![img_372.png](img_372.png)
