@@ -1865,3 +1865,71 @@ they affect the result, but the oven doesn’t set them—you do.
 - 3d convolution
   - FC layer: Fully Connected layer (also called a Dense layer).
   ![img_372.png](img_372.png)
+
+- early-fusion 2D convolutions do NOT have temporal shift-invariance, while 3D convolutions do.
+  - what is temporal shift-invariance (in human words)?
+    - if the same thing happens earlier or later in time, I still recognize it as the same thing.
+    - or in different words:
+    - early fusion only knows where in time something happens. 3D convolution knows what happens, no matter when it happens.
+  - intuition:
+    - early fusion: “I learned this motion at frame #5” 
+    - 3D conv: “I learned this motion pattern”
+  - “Blue → orange” means ‘something changes over time’. 
+    - 3D CNNs learn the change itself, early-fusion 2D CNNs learn when the change happens.
+  ![img_375.png](img_375.png)
+  ![img_376.png](img_376.png)
+  ![img_377.png](img_377.png)
+  ![img_378.png](img_378.png)
+  ![img_379.png](img_379.png)
+
+- datasets:
+  - [Sports-1M](https://github.com/gtoderici/sports-1m-dataset)
+  ![img_380.png](img_380.png)
+  ![img_381.png](img_381.png)
+  - [UCF-101](https://www.kaggle.com/datasets/matthewjansen/ucf101-action-recognition):
+  ![img_388.png](img_388.png)
+
+- C3D model
+  - architecture mirrors VGG, but extended to time
+  - VGG is a classic image-recognition CNN architecture that became famous because it showed that deep + simple + uniform design works extremely well.
+  - [Learning Spatiotemporal Features with 3D Convolutional Networks](https://arxiv.org/pdf/1412.0767)
+  ![img_382.png](img_382.png)
+  ![img_383.png](img_383.png)
+
+- recognizing actions from motion
+  - [Visual perception of biological motion and a model for its analysis](https://link.springer.com/content/pdf/10.3758/BF03212378.pdf) 
+  ![img_384.png](img_384.png)
+  - human are really good at recognizing motion from really little information, only points
+  - so this brings the question, perhaps we should separate "motion" from "appearance" when doing classification?
+  - [Two-Stream Convolutional Networks for Action Recognition in Videos](https://arxiv.org/pdf/1406.2199)
+  ![img_385.png](img_385.png)
+  ![img_386.png](img_386.png)
+  ![img_387.png](img_387.png)
+
+- modeling long-term temporal structure
+  ![img_389.png](img_389.png)
+  ![img_390.png](img_390.png)
+  ![img_391.png](img_391.png)
+  ![img_392.png](img_392.png)
+  ![img_393.png](img_393.png)
+
+- recurrent convolutional network for videos 
+  - [Delving Deeper into Convolutional Networks for Learning Video Representations](https://arxiv.org/pdf/1511.06432)
+  ![img_394.png](img_394.png)
+  ![img_395.png](img_395.png)
+  ![img_396.png](img_396.png)
+  ![img_397.png](img_397.png)
+  ![img_398.png](img_398.png)
+
+- different models “see” time differently:
+  - CNNs see only a short, fixed window of time
+  - RNNs can, in principle, see the entire past
+  - Recurrent CNNs try to get the best of both worlds
+  - so... recurrent CNNs extend CNNs through time, letting them remember the past without losing spatial structure.
+  ![img_399.png](img_399.png)
+  ![img_400.png](img_400.png)
+
+- since RNNs are not really parallelizeable an alternative is use "self-attention" (once again...)
+  ![img_401.png](img_401.png)
+  ![img_402.png](img_402.png)
+  ![img_403.png](img_403.png)
