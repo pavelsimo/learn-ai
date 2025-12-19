@@ -2086,6 +2086,20 @@ they affect the result, but the oven doesn’t set them—you do.
   - so... now we're training not only in one GPU but multiple GPUS!
   ![img_429.png](img_429.png)
 
+- what yield means in chip manufacturing?
+  - when NVIDIA manufactures a GPU like H100, they don’t get perfect chips every time:
+    - a single H100 die is huge (one of the largest chips ever made)
+    - the bigger the chip, the higher the chance that some tiny region has a defect
+    - defects are unavoidable at advanced nodes (TSMC 4N)
+  - think of it like:
+    - designing a car with 5 engines, knowing you’ll only sell it with 4 running.
+  - die:
+    ![img_425.png](img_425.png)
+
+- yield vs binning
+  - Yield = Can the chip be sold at all?
+  - Binning = How good is this chip compared to others?
+
 - gpu cluster:
   - [The Llama 3 Herd of Models](https://arxiv.org/pdf/2407.21783)
   - inside a single GPU (best case)
@@ -2237,18 +2251,59 @@ they affect the result, but the oven doesn’t set them—you do.
     ![img_455.png](img_455.png)
     ![img_456.png](img_456.png)
 
-- what yield means in chip manufacturing?
-  - when NVIDIA manufactures a GPU like H100, they don’t get perfect chips every time:
-    - a single H100 die is huge (one of the largest chips ever made)
-    - the bigger the chip, the higher the chance that some tiny region has a defect
-    - defects are unavoidable at advanced nodes (TSMC 4N)
-  - think of it like:
-    - designing a car with 5 engines, knowing you’ll only sell it with 4 running.
-  - die:
-    ![img_425.png](img_425.png)
+  - contex parallelism (CP):
+    - [Ring Attention with Blockwise Transformers for Near-Infinite Context](https://arxiv.org/pdf/2310.01889)
+    - [DeepSpeed Ulysses: System Optimizations for Enabling Training of Extreme Long Sequence Transformer Models](https://arxiv.org/pdf/2309.14509)
+    - split a long sequence in multiple GPUs and process it in parallel (during training).
+    - this is mainly used for Transformers when:
+      - the sequence length L is huge (e.g. 16k, 32k, 128k tokens),
+      - and a single GPU can’t handle all tokens efficiently.
+    - so instead of:
+      - GPU 1 processes tokens 1...L
+    - we do:
+      - GPU 1 → tokens 1 ... L/2
+      - GPU 2 → tokens L/2+1 ... L
+      - (and so on)
+    - the hard part: Self-Attention (red text)
+      - self-attention needs all tokens
+      - but now:
+        - GPU 1 has tokens 1–2
+        - GPU 2 has tokens 3–4
+      - so:
+        - tokens on GPU 1 need K, V from GPU 2
+        - tokens on GPU 2 need K, V from GPU 1
+        - this requires communication across GPUs.
+      - what context parallelism (CP) does for attention?
+        - each GPU:
+          - computes Q, K, V for its local tokens
+          - GPUs exchange K and V (or partial attention results)
+          - each GPU computes attention outputs for its tokens
+        - this reduces:
+          - memory per GPU
+          - attention computation per GPU
+        - but introduces:
+          - communication overhead
+    ![img_457.png](img_457.png)
+    ![img_458.png](img_458.png)
+    ![img_459.png](img_459.png)
+  
+  - pipeline parallelism (PP)
+    ![img_460.png](img_460.png)
+    ![img_461.png](img_461.png)
+    ![img_462.png](img_462.png)
+    ![img_463.png](img_463.png)
 
-- yield vs binning
-  - Yield = Can the chip be sold at all?
-  - Binning = How good is this chip compared to others?
+  - tensor parallelism (TP)
+    ![img_464.png](img_464.png)
+    ![img_465.png](img_465.png)
+    ![img_466.png](img_466.png)
+
+  - ND parallelism:
+    ![img_467.png](img_467.png)
+    ![img_468.png](img_468.png)
+  
+- summary large-scale distributed training
+  ![img_469.png](img_469.png)
+
 
  
