@@ -1932,7 +1932,7 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_399.png](img_399.png)
   ![img_400.png](img_400.png)
 
-- since RNNs are not really parallelizeable an alternative is use "self-attention" (once again...)
+- since RNNs are not really parallelize-able an alternative is use "self-attention" (once again...)
   ![img_401.png](img_401.png)
   ![img_402.png](img_402.png)
   ![img_403.png](img_403.png)
@@ -2009,3 +2009,246 @@ they affect the result, but the oven doesn’t set them—you do.
       - [Video-ChatGPT: Towards Detailed Video Understanding via Large Vision and Language Models](https://arxiv.org/pdf/2306.05424)
       - [VideoLLaMA-3: Frontier Multimodal Foundation Models for Video Understanding](https://arxiv.org/pdf/2501.13106)
       ![img_421.png](img_421.png)
+
+- GPT4 kicked off a trend of not sharing any model details!
+  ![img_422.png](img_422.png)
+
+- inside a GPU: NVIDIA H100
+  - GPU: Graphics Processing Unit
+  - originally for graphics
+  - now a general parallel processor
+  - 80 GB of HBM memory
+  - 3352 GB/sec bandwidth to cores (~3.3 TB/sec)
+  ![img_423.png](img_423.png)
+  - 50MB of L2 Cache
+  - 132 Streaming Multiprocessors (SMs)
+  - these are independent parallel cores
+  - (actually 144 here; only 132 are enabled due to yield)
+  ![img_424.png](img_424.png)
+  - here we zoom in into one Streaming Multiprocessor (SM) of the H100:
+  - one SM is a tiny self-contained parallel computer inside the GPU
+  - each has:
+    - its own L1 cache
+    - its own register file
+    - FP32 (scalar/vector) cores
+    - Tensor Cores (matrix engines)
+  - the H100 has 132 of these SMs working in parallel.
+  - FP32 Cores — “classic” GPU math units
+    - 128 FP32 cores
+    - × 2 FLOPs per cycle
+    - = 256 FP32 FLOPs per cycle per SM
+    - an FP32 core performs a fused multiply-add (FMA):
+      - $a*x + b$
+    - operate on scalars or small vectors, not whole matrices at once
+  - Tensor Cores — matrix engines (the real monster)
+    - this is where performance jumps by orders of magnitude!
+    - a tensor core does matrix multiply-accumulate:
+      - $A×X + B$
+    - matrix multiply cost:
+      - $16×4×8=512$ multiply-adds
+    - each multiply-add = 2 FLOPs
+      - $512×2=1024$ FLOPs
+    - so:
+      - 1024 FLOPs per Tensor Core per cycle
+      - × 4 Tensor Cores
+      - = 4096 FLOPs per cycle per SM
+    - 👉 Compare that to FP32:
+      - FP32: 256 FLOPs / cycle
+      - Tensor: 4096 FLOPs / cycle
+    - tensors cores can do 16× more math per cycle!!
+    - so keep in mind if you want to run fast, you have to run in the tensor cores!
+    - why Tensor Cores are so fast?
+      - operate on entire matrices at once
+      - are hard-wired for linear algebra
+      - sacrifice flexibility for throughput
+      - they: 
+        - don’t execute arbitrary code
+        - only do matrix math
+        - but do it extremely efficiently
+      - think:
+        - Tensor Cores = industrial factory stamping out matrices
+        - FP32 cores = skilled workers doing hand calculations
+    - how tensors core handle Mixed precision?
+      - inputs often in FP16 / BF16 / FP8 precision
+      - accumulation may be FP32 precision
+      - result accuracy stays acceptable
+      - speed and energy efficiency skyrocket
+  - if shapes & precision allow, PyTorch automatically map ops to Tensor Cores
+    ![img_426.png](img_426.png)
+  - GPUs have gotten much faster!
+    - x-axis - time
+    - y-axis - pick throughput for each GPU
+    - V100 introduces the tensor cores
+    - keep in mind here the "5000 TC" means TFLOPS of compute, NOT Tensor Cores 
+  ![img_427.png](img_427.png)
+  - this 1000x speedup is one of the major drivers of improvements in deep learning.
+  ![img_428.png](img_428.png)
+  - so... now we're training not only in one GPU but multiple GPUS!
+  ![img_429.png](img_429.png)
+
+- gpu cluster:
+  - [The Llama 3 Herd of Models](https://arxiv.org/pdf/2407.21783)
+  - inside a single GPU (best case)
+    - 3352 GB/s (HBM memory bandwidth)
+      - this is on-chip memory bandwidth
+      - no networking, no contention
+      - used for matrix multiplies, attention, etc.
+    - 🟢 fastest bandwidth in the entire system
+  - within one server (8 GPUs)
+    - ~900 GB/s between GPUs
+      - GPUs connected via NVLink / NVSwitch
+      - dedicated, short-distance links
+      - high-bandwidth, low-latency, almost “local”
+    - 🟢 ideal for tensor / pipeline / data parallelism
+  - within a rack (16 GPUs, 2 servers)
+    - still ~NVLink domain (effectively)
+      - often still backed by NVSwitch
+      - slightly more hops, but same class of links
+    - 🟡 minor overhead, but still “good” bandwidth
+  - within a pod (3072 GPUs, 192 racks)
+    - ~50 GB/s between GPUs
+      - you leave NVLink
+      - you move to InfiniBand / Ethernet
+    - 🟠 ~18× drop vs server-local bandwidth
+    - 🟠 communication now dominates training time
+  - full cluster (24,576 GPUs, 8 pods)
+    - < 50 GB/s between GPUs
+      - cross-pod traffic
+      - multiple switches, congestion, routing
+      - collective ops (all-reduce) become painful
+    - 🔴 bandwidth per GPU is now tiny compared to compute needs
+  - why bandwidth drops as GPUs increase?
+    - reason 1: Physical limits
+    - reason 2: Network sharing
+    - reason 3: Collective communication explodes
+  - analogy: 
+    - 1 GPU: talking to itself 
+    - 8 GPUs: people in the same room 
+    - 1 rack: people in the same building 
+    - 1 pod: people across a city 
+    - cluster: people across continents on Zoom 
+    - same conversation, much slower coordination.
+
+  | Scale                      | Bandwidth | Slowdown vs 3352 GB/s |
+  |----------------------------| --------: | --------------------: |
+  | Inside 1 GPU               | 3352 GB/s |      1.00× (baseline) |
+  | 1 server (8 GPUs)          |  900 GB/s |          3.72× slower |
+  | 1 pod (3072 GPUs)          |   50 GB/s |         67.04× slower |
+  | Full cluster (24,576 GPUs) | < 50 GB/s |       > 67.04× slower |
+
+  ![img_430.png](img_430.png)
+  ![img_431.png](img_431.png)
+  ![img_432.png](img_432.png)
+  ![img_433.png](img_433.png)
+  ![img_434.png](img_434.png)
+  ![img_435.png](img_435.png)
+
+- Google: Tensor Processing Units (TPUs)
+  - you can't buy TPUs, you can only rent them from google cloud
+  - less popular than NVIDIA GPUs
+  - NVIDIA and Google is ahead of everyone else
+  ![img_436.png](img_436.png)
+
+- other training chips
+  ![img_437.png](img_437.png)
+
+- how to train on lots of GPUs?
+  ![img_438.png](img_438.png)
+  - data parallelism 
+    ![img_439.png](img_439.png)
+    ![img_440.png](img_440.png)
+    - 1B parameters takes 8GB of GPU memory
+    - 10B parameters takes 80GB of GPU memory
+    ![img_441.png](img_441.png)
+    ![img_442.png](img_442.png)
+  - fully sharded data parallelism:
+    - [ZeRO: Memory Optimizations Toward Training Trillion Parameter Models](https://arxiv.org/pdf/1910.02054)
+    ![img_443.png](img_443.png)
+    ![img_444.png](img_444.png)
+  - hybrid sharded data parallelism:
+    ![img_445.png](img_445.png)
+  - FSDP solves parameter memory
+  - it does NOT automatically solve activation memory
+  - large LLM training typically uses:
+    - bf16 or fp16 for weights and grads
+    - `2 bytes × 4 numbers = 8 bytes per parameter`
+  - because of Adam (a more "fancy" gradient descent) each parameter needs 4 numbers:
+    - **weight W[i]**: the parameter itself
+    - **gradient dL / dW[i]**: direction now
+    - **First moment (Adam β₁) m[i]**: direction on average
+    - **Second moment (Adam β₂) v[i]**: how trustworthy that direction is
+  ![img_446.png](img_446.png) 
+  ![img_447.png](img_447.png)
+  - when training a neural network, backpropagation needs the activations from the forward pass.
+  - during the forward pass, each layer produces an activation (A₁, A₂, A₃, …).
+  - during the backward pass, gradients (G₁, G₂, …) are computed using those activations.
+  - if you want fast training, you usually store all activations in memory so the backward pass can reuse them.
+  - problem: for very deep networks, storing all activations uses a lot of GPU memory.
+  - solution: activation checkpointing saves GPU memory by storing only some activations and recomputing the rest during backprop, trading a bit of extra compute for huge memory savings.
+  ![img_448.png](img_448.png)
+  ![img_449.png](img_449.png)
+  ![img_450.png](img_450.png)
+  ![img_451.png](img_451.png)
+
+  - guidelines as the number of parameters increases:
+    - [PaLM: Scaling Language Modeling with Pathways](https://arxiv.org/pdf/2204.02311) 
+    - HFU — Hardware FLOPs Utilization
+      - how much of the GPU’s raw theoretical compute you can reach in an ideal kernel.
+      - HFU = achieved FLOPs / theoretical peak FLOPs
+      - measured using pure matrix multiplication (best-case scenario).
+      - ignores everything else:
+        - activation checkpointing
+        - optimizer steps
+        - data loading
+        - preprocessing
+        - communication
+      - intuition:
+        - how fast can this GPU go if I only do GEMMs (GEneral Matrix–Matrix Multiplication)?
+      - example: 
+        - H100 theoretical peak ≈ 989 TFLOP/s (BF16)
+        - large matmul reaches ~80% HFU
+        - that’s near hardware limits
+      - clearly HFU is too optimistic for real training!
+    - MFU — Model FLOPs Utilization
+      - how much of the GPU’s peak compute is spent on useful model computation during real training.
+        - includes:
+          - forward pass
+          - backward pass
+          - optimizer step
+          - activation checkpoint recomputation
+          - data loading & overheads
+      - MFU = theoretical model FLOPs per step / actual wall-clock FLOPs per step
+      - rule of thumb:
+        - MFU > 30% → good
+        - MFU > 40% → excellent
+        - large-scale LLM training typically lives in 30–45%
+      - intuition:
+        - how efficiently am I training my model end-to-end?
+      - so in training is better to focus in maximizing MFU, instead of HFU.
+      - why MFU often gets worse on newer GPUs?
+        - because nowadays compute is growing faster than memory bandwidth
+        - so the bottleneck is usually in moving data around
+        - A100 → H100:
+          - ~3.1× FLOPs
+          - ~2.1× memory bandwidth
+    ![img_452.png](img_452.png)
+    ![img_453.png](img_453.png)
+    ![img_454.png](img_454.png)
+    ![img_455.png](img_455.png)
+    ![img_456.png](img_456.png)
+
+- what yield means in chip manufacturing?
+  - when NVIDIA manufactures a GPU like H100, they don’t get perfect chips every time:
+    - a single H100 die is huge (one of the largest chips ever made)
+    - the bigger the chip, the higher the chance that some tiny region has a defect
+    - defects are unavoidable at advanced nodes (TSMC 4N)
+  - think of it like:
+    - designing a car with 5 engines, knowing you’ll only sell it with 4 running.
+  - die:
+    ![img_425.png](img_425.png)
+
+- yield vs binning
+  - Yield = Can the chip be sold at all?
+  - Binning = How good is this chip compared to others?
+
+ 
