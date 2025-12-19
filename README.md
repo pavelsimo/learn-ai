@@ -1888,6 +1888,9 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_381.png](img_381.png)
   - [UCF-101](https://www.kaggle.com/datasets/matthewjansen/ucf101-action-recognition):
   ![img_388.png](img_388.png)
+  - [Kinetics-400](https://www.kaggle.com/datasets/ipythonx/k4testset)
+  ![img_408.png](img_408.png)
+  - [AVA-Dataset](http://research.google.com/ava/)
 
 - C3D model
   - architecture mirrors VGG, but extended to time
@@ -1933,3 +1936,76 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_401.png](img_401.png)
   ![img_402.png](img_402.png)
   ![img_403.png](img_403.png)
+
+- can we reuse image architectures for video?
+  - [Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset](https://arxiv.org/pdf/1705.07750) 
+  - intuition: 
+  - 2D CNN → looks at a single photo
+  - 3D CNN → looks at a short flipbook
+  - Inflation says:
+    - “start by treating all frames equally, then let training learn motion.”
+  - the amazing part of all this is you can re-use the weights of image 2D CNN in the 3D CNN for videos! 
+  ![img_404.png](img_404.png)
+  ![img_405.png](img_405.png)
+  ![img_406.png](img_406.png)
+
+- other vision transformers for video:
+  - [Is Space-Time Attention All You Need for Video Understanding?](https://arxiv.org/pdf/2102.05095)
+  - [ViViT: A Video Vision Transformer](https://arxiv.org/pdf/2103.15691)
+  - [Video Transformer Network](https://arxiv.org/pdf/2102.00719)
+  ![img_407.png](img_407.png)
+
+- visualizing video models:
+  - appearance
+  - slow motion
+  - fast motion
+  ![img_409.png](img_409.png)
+  ![img_410.png](img_410.png)
+  ![img_411.png](img_411.png)
+
+- temporal action localization:
+  - [Rethinking the Faster R-CNN Architecture for Temporal Action Localization](https://arxiv.org/pdf/1804.07667)
+  - Given a long untrimmed video sequence, identify frames coressponding to different actions. 
+  ![img_412.png](img_412.png)
+
+- spatio-temporal detection
+  - [AVA: A Video Dataset of Spatio-temporally Localized Atomic Visual Actions](https://arxiv.org/pdf/1705.08421) 
+  - given a long untrimmed video, detect all the people in both space and time and classify
+  - the activities they are performing
+  ![img_413.png](img_413.png)
+
+- visually-guided audio source separation
+  - video is not only images, but comes together with audio
+  - [Learning to Separate Object Sounds by Watching Unlabeled Video](https://arxiv.org/pdf/1804.01665)
+  - [Deep Multimodal Clustering for Audio-Visual Source Separation](https://arxiv.org/pdf/1807.03094)
+  - [Looking to Listen at the Cocktail Party](https://arxiv.org/pdf/1804.03619)
+  - [Visual Microphone: Passive Recovery of Sound from Video](https://people.csail.mit.edu/mrub/papers/VisualMic_SIGGRAPH2014.pdf)
+  - [2.5D Visual Sound](https://arxiv.org/pdf/1812.04204)
+  - [Co-Separating Sounds of Visual Objects](https://arxiv.org/pdf/1904.07750)
+  ![img_414.png](img_414.png)
+  - applications:
+    - musical instruments source separation
+      ![img_415.png](img_415.png)
+    - audio-visual understanding
+      - [Attention Bottlenecks for Multimodal Fusion](https://arxiv.org/pdf/2107.00135)
+      - [Audio-Adaptive Activity Recognition Across Video Domains](https://arxiv.org/pdf/2203.14240)
+      - [Audiovisual Masked Autoencoders](https://arxiv.org/pdf/2212.05922)
+      ![img_416.png](img_416.png)
+    - efficient video understanding
+      - [MoViNets: Mobile Video Networks for Efficient Video Recognition](https://arxiv.org/pdf/2103.11511)
+      - [SCSampler: Sampling Salient Clips from Video for Efficient Action Recognition](https://arxiv.org/pdf/1904.04289)
+      - [X3D: Expanding Architectures for Efficient Video Recognition](https://arxiv.org/pdf/2004.04730)
+      - [AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition](https://arxiv.org/pdf/2105.05165)
+      - [Listen to Look: Action Recognition by Previewing Audio](https://openaccess.thecvf.com/content_CVPR_2020/papers/Gao_Listen_to_Look_Action_Recognition_by_Previewing_Audio_CVPR_2020_paper.pdf)
+      ![img_417.png](img_417.png)
+      ![img_418.png](img_418.png)
+      ![img_419.png](img_419.png)
+    - multimodal egocentric video understanding
+      - Egocentric video (first-person / wearable cameras) 
+      - [The Audio-Visual Conversational Graph: From an Egocentric–Exocentric Perspective](https://openaccess.thecvf.com/content/CVPR2024/papers/Jia_The_Audio-Visual_Conversational_Graph_From_an_Egocentric-Exocentric_Perspective_CVPR_2024_paper.pdf) 
+      ![img_420.png](img_420.png)
+    - video understanding + LLMs
+      - [Video-LLaVA: Learning United Visual Representations by Alignment Before Projection](https://arxiv.org/pdf/2311.10122)
+      - [Video-ChatGPT: Towards Detailed Video Understanding via Large Vision and Language Models](https://arxiv.org/pdf/2306.05424)
+      - [VideoLLaMA-3: Frontier Multimodal Foundation Models for Video Understanding](https://arxiv.org/pdf/2501.13106)
+      ![img_421.png](img_421.png)
