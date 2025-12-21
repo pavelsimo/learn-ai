@@ -2714,7 +2714,6 @@ they affect the result, but the oven doesn’t set them—you do.
   - MoCo v3 adapts contrastive learning to Vision Transformers by stabilizing training and showing that standard contrastive objectives work well for ViTs without architectural tricks.
   - it studies how to train ViTs with self-supervised learning properly.
   - demonstrates strong results using MoCo-style contrastive learning on ViTs.
-  - 
   - [An Empirical Study of Training Self-Supervised Vision Transformers](https://arxiv.org/pdf/2104.02057) 
   ![img_543.png](img_543.png)
 - DINO:
@@ -2723,3 +2722,34 @@ they affect the result, but the oven doesn’t set them—you do.
   - [Emerging Properties in Self-Supervised Vision Transformers](https://arxiv.org/pdf/2104.14294)
   ![img_544.png](img_544.png)
   ![img_545.png](img_545.png)
+  ![img_546.png](img_546.png)
+  - DINOv2:
+    - [DINOv2: Emergent Abilities in Self-Supervised Vision Transformers](https://hal.science/hal-04376640v2/file/CVPR_2023_dinov2%20%284%29.pdf)
+    - DINOv2 is popular today because it solves the main pain points of earlier self-supervised vision methods and turns them into a single, strong, practical foundation model.
+    - What problem existed before DINOv2?
+      - worked well, but… 
+      - needed careful tuning 
+      - often trained on ImageNet only 
+      - produced features that were:
+      - great for classification 
+      - less reliable for dense tasks (segmentation, depth, correspondence)
+      - hard to reuse out of the box across domains
+      - people wanted:
+        - One general-purpose vision encoder that just works.
+      - DINOv2 is trained on hundreds of millions of curated images, not just ImageNet.
+      - this gives:
+        - better object coverage 
+        - better texture + shape understanding 
+        - stronger generalization to real-world data
+      - Strong Vision Transformer backbone 
+        - uses large ViTs (ViT-B/L/G)
+        - patch-based representations 
+        - excellent for dense spatial understanding
+    ![img_547.png](img_547.png)
+
+- self-supervised learning summary:
+  ![img_548.png](img_548.png)
+  ![img_549.png](img_549.png)
+  ![img_550.png](img_550.png)
+
+- generative models
