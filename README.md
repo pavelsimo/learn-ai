@@ -2305,5 +2305,421 @@ they affect the result, but the oven doesn’t set them—you do.
 - summary large-scale distributed training
   ![img_469.png](img_469.png)
 
+- self-supervised learning
+  - is there a way we can train neural networks without the need for huge manually labeled datasets?
+  ![img_470.png](img_470.png)
+  - self-supervised learning learns good representations from unlabeled data first, then uses a small labeled dataset to solve the real task you care about.
+  ![img_471.png](img_471.png)
+  - why this work?
+    - even though there are “no labels”, the model still gets a training signal
+    - we train with supervised objectives (loss functions), but the labels are auto-generated
+  - why this is called self-supervised?
+    - no human annotation
+    - no external labels
+    - the data supervises itself via transformations you control
+  ![img_472.png](img_472.png)
+  ![img_473.png](img_473.png)
+  ![img_474.png](img_474.png)
 
- 
+- how to evaluate a self-supervised learning method?
+  ![img_475.png](img_475.png)
+  ![img_476.png](img_476.png)
+  
+
+- the broader picture of self-supervised learning
+  - [Unsupervised Visual Representation Learning by Context Prediction](https://arxiv.org/abs/1505.05192)
+  - [GPT-4 Technical Report (OpenAI, 2023)](https://arxiv.org/pdf/2303.08774)
+  - [WaveNet: A Generative Model for Raw Audio](https://arxiv.org/pdf/1609.03499)
+  - [Dense Object Nets: Learning Dense Visual Object Descriptors By and For Robotic Manipulation](https://arxiv.org/abs/1806.08756)
+  ![img_477.png](img_477.png)
+
+- predict rotations:
+  - [Unsupervised Representation Learning by Predicting Image Rotations](https://arxiv.org/pdf/1803.07728) 
+  ![img_478.png](img_478.png)
+  ![img_479.png](img_479.png)
+  ![img_480.png](img_480.png)
+
+- this plot shows that self-supervised pretraining dramatically improves performance when labeled data is limited, and its advantage decreases as more labels become available.
+  ![img_481.png](img_481.png)
+
+- learning paradigms
+  
+  | Paradigm | Uses Labeled Data? | Uses Unlabeled Data? | What Is Optimized? | Typical Goal | Simple Definition |
+  |--------|-------------------|----------------------|-------------------|--------------|------------------|
+  | **Supervised** | ✅ All data labeled | ❌ No | Task loss (e.g. cross-entropy, MSE) | Solve a specific task | Learn a direct mapping from inputs to known labels |
+  | **Unsupervised** | ❌ No | ✅ All data unlabeled | Structure objective (e.g. clustering, density estimation) | Discover patterns | Find structure or regularities in data without labels |
+  | **Self-supervised** | ❌ No (human labels) | ✅ All data unlabeled | Pretext loss (auto-generated targets) | Learn representations | Learn useful features by creating labels from the data itself |
+  | **Semi-supervised** | ✅ Some labels | ✅ Many unlabeled | Task loss + auxiliary/regularization | Solve a task with few labels | Use unlabeled data to improve supervised learning |
+
+- typical Examples
+  
+  | Paradigm | Example |
+  |--------|--------|
+  | Supervised | Image classification with labeled ImageNet |
+  | Unsupervised | K-means clustering, PCA |
+  | Self-supervised | Predict image rotations, masked language modeling |
+  | Semi-supervised | Self-supervised pretraining + fine-tuning on few labels |
+
+- this table evaluates how well features learned in different ways transfer to real supervised tasks.
+  - [Unsupervised Representation Learning by Predicting Image Rotations](https://arxiv.org/pdf/1803.07728)
+  - this table is based on AlexNet
+  ```
+  conv1
+  conv2
+  conv3
+  conv4
+  conv5
+  fc6
+  fc7
+  fc8 
+  ```
+  - what is mAP (mean Average Precision)?
+    - measures how well the model ranks positives above negatives
+    - computed from the precision–recall curve
+    - higher %mAP = better classification performance
+  - what is IoU (Intersection over Union)?
+    - Compute IoU per class
+    - Average across all classes
+    - IoU = (Predicted ∩ Ground Truth) / (Predicted ∪ Ground Truth)
+    - higher %mIoU = more accurate pixel-level segmentation
+  - subcolumns: fc6–8 vs all?
+    - fc6–8:
+      - only train layers fc6, fc7, fc8
+      - freeze all convolutional layers (conv1–conv5 ❄️ frozen)
+    - all:
+      - fine-tune the entire network
+  - Column group 1: Classification (%mAP)
+    - task: multi-label image classification (Pascal VOC); an image can contain multiple objects
+  - Column group 2: Detection (%mAP)
+    - task: object detection (bounding boxes)
+  - Column group 3: Segmentation (%mIoU)
+    - task: semantic segmentation (assign a class label to each pixel)
+  ![img_482.png](img_482.png)
+
+- IoU (Intersection over Union) implementation:
+  
+  ```python
+  def iou(boxA, boxB):
+      """
+      boxA, boxB: (x_min, y_min, x_max, y_max)
+      """
+  
+      # Intersection box
+      x_left   = max(boxA[0], boxB[0])
+      y_top    = max(boxA[1], boxB[1])
+      x_right  = min(boxA[2], boxB[2])
+      y_bottom = min(boxA[3], boxB[3])
+  
+      # No overlap
+      if x_right <= x_left or y_bottom <= y_top:
+          return 0.0
+  
+      intersection_area = (x_right - x_left) * (y_bottom - y_top)
+  
+      # Areas of each box
+      areaA = (boxA[2] - boxA[0]) * (boxA[3] - boxA[1])
+      areaB = (boxB[2] - boxB[0]) * (boxB[3] - boxB[1])
+  
+      union_area = areaA + areaB - intersection_area
+  
+      return intersection_area / union_area
+  ```
+  
+  ```python
+  gt_box   = (10, 10, 50, 50)   # ground truth
+  pred_box = (30, 30, 70, 70)   # prediction
+  
+  print(iou(gt_box, pred_box))
+  ```
+  
+  - **meaning:** only ~14% overlap → poor localization
+
+- pretext task: predict relative patch locations
+  - given two patches sampled from an image, the model must predict the relative spatial position of one patch with respect to the other (e.g., above, below, left, right).
+  - [Unsupervised Visual Representation Learning by Context Prediction](https://arxiv.org/pdf/1505.05192)
+  ![img_483.png](img_483.png)
+  - why is it called a “pretext task”?
+    - because the task is not the real goal.
+    - it is a made-up task used as a pretext (an excuse) to force the model to learn useful representations.
+    - in self-supervised learning the real goal is: 
+      - learn good visual representations
+      - capture shapes, parts, spatial layout, semantics
+    - the pretext task
+      - predict relative patch positions
+      - predict rotations
+      - predict missing patches
+      - predict next token
+
+- pretext task: solving "jigsaw puzzles"
+  - this was one of the most influential early self-supervised vision papers, showing that spatial reasoning alone can produce transferable visual features.
+  - so they first train a model to solve jigsaw puzzles (the pretext task), then transfer the learned features and fine-tune them for classification, detection, and segmentation, and the results are surprisingly strong.
+  - they were not trying to make the best jigsaw solver... 
+  - they were using jigsaw solving as a pretext to force the network to learn:
+    - object parts
+    - spatial layout
+    - global structure
+  - those learned features are then reused
+  - why this result was important historically?
+    - before this:
+      - people believed labels were mandatory
+      - unsupervised learning was seen as weak
+    - this paper helped show:
+      - structure alone can teach visual understanding.
+  - all rows answer the same question:
+    - if I pretrain a network in some way, how good are the features when I transfer them to real tasks?
+  - common setup for all methods:
+    - same backbone (AlexNet)
+    - same downstream dataset: PASCAL VOC 2007
+    - same evaluation tasks: classification, detection, segmentation
+    - so the comparison is fair.
+  - the row: “Krizhevsky et al.”
+    - refers to: AlexNet trained on ImageNet with full human labels (Krizhevsky, Sutskever, Hinton, 2012)
+    - note AlexNet was not originally trained to do detection or segmentation. it was pretrained for classification and then fine-tuned for the other tasks.
+  - [Unsupervised Learning of Visual Representations by Solving Jigsaw Puzzles](https://arxiv.org/pdf/1603.09246) 
+  ![img_484.png](img_484.png)
+
+- pretext task: predict missing pixels
+  - [Context Encoders: Feature Learning by Inpainting](https://arxiv.org/pdf/1604.07379) 
+  - the model learns visual representations by predicting missing pixels in an image from the surrounding context (image inpainting), without using any human labels.
+  ![img_485.png](img_485.png)
+  ![img_486.png](img_486.png)
+  ![img_487.png](img_487.png)
+  ![img_488.png](img_488.png)
+  ![img_489.png](img_489.png)
+  ![img_490.png](img_490.png)
+  - what is an Autoencoder?
+    - an autoencoder is a neural network trained to compress an input into a representation and then reconstruct the original input from that representation.
+    ```
+    input image  → encoder → latent → decoder → reconstructed image
+                                    ↓
+                               compare with input
+    ```
+    - encoding means here: 
+      - converting the masked image into compact convolutional feature maps that summarize the visible context and semantics needed to reconstruct the missing pixels.
+    - decoder means here:
+      - the decoder takes the encoded feature representation and transforms it back into pixel values, reconstructing the missing image content in a way that is consistent with the surrounding context.
+      - the decoder’s job is to “draw” the image (or missing part) using the high-level understanding produced by the encoder.
+    - intuition for this example:
+      - the encoder answers:
+        - what is happening in this image, and what should be here?
+      - the decoder answers:
+        - given that understanding, how do I draw it?
+    - so where is the "auto" coming from here?
+      - input: image with missing pixels
+      - target: the original image (or missing region)
+      - the label is not human-annotated — it comes automatically from the same image!
+      - that’s the “auto”.
+
+- pretext task: image coloring
+  - image colorization is a self-supervised pretext task where the model learns semantic visual representations by predicting color from grayscale images.
+  - step 1: Convert image to Lab color space
+  - step 2: Self-supervised training
+    - no human labels are used — the color information comes from the same image.
+  - [Colorful Image Colorization](https://arxiv.org/pdf/1603.08511) 
+  ![img_491.png](img_491.png)
+  ![img_492.png](img_492.png)
+  ![img_493.png](img_493.png)
+  ![img_494.png](img_494.png)
+  ![img_495.png](img_495.png)
+  ![img_496.png](img_496.png)
+  ![img_497.png](img_497.png)
+
+- pretext task: video coloring
+  - the model learns visual representations by colorizing grayscale video frames such that colors remain temporally consistent across time, forcing it to implicitly learn motion and object tracking.
+  - by forcing a model to color moving objects consistently across video frames, the model implicitly learns object tracking without any labeled supervision.
+  - [Tracking Emerges by Colorizing Videos](https://arxiv.org/pdf/1806.09594)
+  ![img_498.png](img_498.png)
+  ![img_499.png](img_499.png)
+  ![img_500.png](img_500.png)
+  - these slides shows how a video colorization model uses attention to copy colors from a reference frame to a future frame, and why that implicitly learns tracking.
+  - step 1: inputs — reference vs target frame
+    - reference frame: a grayscale video (e.g. t = 0, we know its true colors)
+    - target frame: a later grayscale frame (e.g. t = j, we want to predict its colors)
+    - so the question is: 
+      - which pixels in the reference frame correspond to this pixel in the target frame?
+  - step 2: CNN feature extraction (encoding)
+    - both frames are passed through the same CNN:
+      - reference frame  → CNN → features $f_i$
+      - target frame     → CNN → features $f_j$
+      - each pixel becomes a feature vector
+      - these vectors encode:
+        - appearance
+        - local context
+        - object identity
+      - think of $f_i$ and $f_j$ as pixel embeddings.
+  - step 3: attention = soft correspondence (formula in slides -> $A_{ij}$)
+    - compare target pixel j to all reference pixels i
+    - use dot-product similarity
+    - normalize with softmax
+    - $A_{ij}$ value answers: “How much does reference pixel i correspond to target pixel $j$?”
+  - step 4: color prediction by copying (formula in slides -> $y_j$)
+    - $c_i$ = known color of reference pixel $i$
+    - $A_{ij}$ = how much pixel i matches pixel $j$
+  - step 5: minimize training loss
+    - $c_j$ = true color at time $j$
+    - $y_j$ = predicted color
+    - loss could be L2, cross-entropy over color bins, etc.
+  - intuition:
+    - this pixel in frame t looks most like that pixel in frame 0 — so I’ll borrow its color.
+    - this model learns tracking by using attention to copy colors from a reference frame to future frames, because predicting the right colors requires discovering pixel correspondences across time.
+  ![img_501.png](img_501.png)
+  ![img_502.png](img_502.png)
+  ![img_503.png](img_503.png)
+  - a model trained only to colorize videos (a self-supervised task) implicitly learns how to track objects and body parts over time — even though it was never trained with tracking labels.
+  - [Self-Supervised Tracking via Video Colorization](https://research.google/blog/self-supervised-tracking-via-video-colorization/)
+  ![img_504.png](img_504.png)
+  ![img_505.png](img_505.png)
+
+- masked auto encoders (MAE)
+  - MAE trains a vision model by hiding a large portion of image patches (50–75%) and learning to reconstruct the missing parts, forcing the model to learn global, semantic representations.
+  - no labels → fully self-supervised
+  - [Masked Autoencoders Are Scalable Vision Learners](https://arxiv.org/pdf/2111.06377) 
+  ![img_506.png](img_506.png)
+  ![img_507.png](img_507.png)
+  ![img_508.png](img_508.png)
+  ![img_509.png](img_509.png)
+  ![img_510.png](img_510.png)
+  ![img_511.png](img_511.png)
+  ![img_512.png](img_512.png)
+  ![img_513.png](img_513.png)
+  ![img_514.png](img_514.png)
+
+- summary pretext tasks from image transformations:
+  ![img_515.png](img_515.png)
+  ![img_516.png](img_516.png)
+
+- what is contrastive representation learning?
+  - contrastive learning trains a model by pulling representations of “the same thing” together and pushing representations of “different things” apart.
+  - key elements:
+    - x → reference (anchor) image
+    - x⁺ → positive example (same image / same object, different view)
+    - x⁻ → negative example (different image / different object)
+  - example:
+    - cat images = x and x⁺
+    - dog image = x⁻
+  - intuition:
+    - different views of the same object should look similar in feature space, and different objects should not
+  ![img_517.png](img_517.png)
+  ![img_518.png](img_518.png)
+  ![img_519.png](img_519.png)
+  ![img_520.png](img_520.png)
+  ![img_521.png](img_521.png)
+  - this paper introduced the InfoNCE loss and connected it to mutual information maximization, exactly as shown in your slide.
+    - [Representation Learning with Contrastive Predictive Coding](https://arxiv.org/pdf/1807.03748)
+  - this paper provides the detailed derivation and explanation of why InfoNCE is a lower bound on mutual information, which is what the slide references at the bottom.
+    - [On Variational Bounds of Mutual Information](https://arxiv.org/pdf/1905.06922)
+  ![img_522.png](img_522.png)
+  - SimCLR learns visual representations by maximizing the agreement between different augmented views of the same image using a contrastive loss, without any labels.
+  - [A Simple Framework for Contrastive Learning of Visual Representations (SimCLR)](https://arxiv.org/pdf/2002.05709)
+  - intuition: 
+    - if two images came from the same original image, their representations should be similar — otherwise, they should be different.
+  ![img_523.png](img_523.png)
+  ![img_524.png](img_524.png)
+  ![img_525.png](img_525.png)
+  ![img_526.png](img_526.png)
+  ![img_527.png](img_527.png)
+  ![img_528.png](img_528.png)
+  ![img_529.png](img_529.png)
+  ![img_530.png](img_530.png)
+  ![img_531.png](img_531.png)
+
+- what is momentum contrastive learning (MoCo)?
+  - momentum contrast (MoCo) is a contrastive learning method designed to get lots of negative samples without needing huge batch sizes.
+   
+  - let's take a step back... 
+  - remember for both SimCLR and MoCo we want:
+  - ```image → representation (embedding)```
+  - such that:
+    - similar images → similar embeddings
+    - different images → different embeddings
+    - embeddings are useful for: classification, detection, segmentation, retrieval, tracking
+  - this representation should capture semantics, not pixels.
+  - supervised learning works — but has big problems:
+    - requires huge labeled datasets
+    - labels are:
+      - expensive
+      - incomplete
+      - task-specific
+    - you only learn what labels tell you
+  - so... how do we learn semantic representations without labels?
+  - instead of predicting labels, we solve this problem:
+    - given one view of an image, identify which other view comes from the same image.
+  - if a model can do this well, it must understand:
+    - semantics
+    - object identity
+    - structure
+  - what SimCLR and MoCo are actually solving?
+    - how can we learn good representations using only raw data and no labels?
+  - but they differ in engineering choices.
+  - SimCLR solves:
+    - how to use contrastive learning as simply as possible
+    - uses:
+      - strong augmentations 
+      - large batches
+    - MoCo solves:
+      - how to do contrastive learning without huge batches 
+      - uses:
+        - memory queues 
+        - momentum encoder 
+  - [Improved Baselines with Momentum Contrastive Learning (MoCo v2)](https://arxiv.org/pdf/2003.04297)
+  ![img_532.png](img_532.png)
+  ![img_533.png](img_533.png)
+  ![img_534.png](img_534.png)
+  ![img_535.png](img_535.png)
+  ![img_536.png](img_536.png)
+  ![img_537.png](img_537.png)
+
+- why SimCLR and MoCo are a breakthrough?
+  - they showed:
+    - labels are not the only source of supervision
+    - structure + invariance = semantics
+    - self-supervised pretraining can:
+      - match supervised learning 
+      - sometimes surpass it
+    - this changed how models are trained.
+  - intuition:
+    - supervised learning:
+      - here is the answer, memorize it.
+    - contrastive self-supervised learning:
+      - figure out what stays the same when I mess with the input.
+
+- what "invariance" means?
+  - invariance = things that should not change the identity.
+  - examples of changes that should NOT matter:
+    - crop 
+    - rotation 
+    - lighting 
+    - color shift 
+    - blur 
+    - background change
+  - a cat is still a cat if:
+    - it’s darker 
+    - it’s zoomed in 
+    - it’s rotated 
+    - it’s black & white
+
+- what is contrastive predictive coding (CPC)? 
+  - [Representation Learning with Contrastive Predictive Coding](https://arxiv.org/pdf/1807.03748) 
+  - CPC trains a model to predict future representations in a sequence (e.g. future image patches, audio frames, or video frames) 
+  - using contrastive learning: it must distinguish the true future from many wrong (negative) futures. 
+  - by doing this, the model is forced to learn high-level structure and temporal dependencies, 
+  - not low-level pixel details, producing representations that transfer well to downstream tasks.
+  ![img_538.png](img_538.png)
+  ![img_539.png](img_539.png)
+  ![img_540.png](img_540.png)
+  ![img_541.png](img_541.png)
+  ![img_542.png](img_542.png)
+
+- MoCo V3:
+  - MoCo v3 adapts contrastive learning to Vision Transformers by stabilizing training and showing that standard contrastive objectives work well for ViTs without architectural tricks.
+  - it studies how to train ViTs with self-supervised learning properly.
+  - demonstrates strong results using MoCo-style contrastive learning on ViTs.
+  - 
+  - [An Empirical Study of Training Self-Supervised Vision Transformers](https://arxiv.org/pdf/2104.02057) 
+  ![img_543.png](img_543.png)
+- DINO:
+  - DINO learns visual representations by making a student network imitate a teacher network on different views of the same image—without any labels.
+  - DINO shows that simply enforcing prediction consistency across views—via self-distillation—can produce strong, object-centric visual representations without labels.
+  - [Emerging Properties in Self-Supervised Vision Transformers](https://arxiv.org/pdf/2104.14294)
+  ![img_544.png](img_544.png)
+  ![img_545.png](img_545.png)
