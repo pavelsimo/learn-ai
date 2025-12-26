@@ -2747,9 +2747,135 @@ they affect the result, but the oven doesn’t set them—you do.
         - excellent for dense spatial understanding
     ![img_547.png](img_547.png)
 
-- self-supervised learning summary:
+- self-supervised learning summary
   ![img_548.png](img_548.png)
   ![img_549.png](img_549.png)
   ![img_550.png](img_550.png)
 
-- generative models
+- supervised learning vs unsupervised learning
+  ![img_551.png](img_551.png)
+  ![img_552.png](img_552.png)
+  ![img_553.png](img_553.png)
+  ![img_554.png](img_554.png)
+  ![img_555.png](img_555.png)
+  ![img_556.png](img_556.png)
+  ![img_557.png](img_557.png)
+  ![img_558.png](img_558.png)
+
+- generative vs discriminative models
+  ![img_559.png](img_559.png)
+  - Data (x): the input the model see
+    - → here: an image (the kitten)
+  - Label (y): what the image means
+    - → here: "cat"
+  - so the core question is:
+    - how do we connect images (x) and labels (y) using probability?
+  - what does “probability” mean here?
+    - probability is used as a “likelihood score”, not as something abstract. 
+    - intuition:
+      - likelihood measures how surprised a model would be by the data you observed.
+      - very surprised → low likelihood  😲
+      - not surprised  → high likelihood 😌
+    - so p(x) does not mean “60% chance”
+    - it means “this region of data space is more likely than others”
+
+  - **Discriminative models — learn p(y|x)**
+    - "Given the image, what is the probability that it’s a cat?"
+    - intuition:
+      - there is NO competition between images, because labels for each image have their own probability distribution
+      - no way to handle unreasonable inputs, must give a label distribution for all possible inputs
+  ![img_560.png](img_560.png)
+  ![img_561.png](img_561.png)
+  ![img_562.png](img_562.png)
+  ![img_563.png](img_563.png)
+  - **Generative models — learn p(x)**
+    - "What kinds of images exist in the world, and how likely are they?"
+    - intuition:
+      - all possible images compete for probability mass
+      - is a really hard question... is a dog more likely to sit or stand? is a 3-legged dog more likely than a 3-armed monkey?
+      - model can "reject" unreasonable inputs by giving then really small probabilities
+  ![img_564.png](img_564.png)
+  ![img_565.png](img_565.png)
+  ![img_566.png](img_566.png)
+  - **Conditional generative models — learn p(x|y)**
+    - "Generate an image, given that the label is cat."
+    - intuition:
+      - each possible label induces a competition across all possible images 
+  ![img_567.png](img_567.png)
+  ![img_568.png](img_568.png)
+  ![img_569.png](img_569.png)
+  ![img_570.png](img_570.png)
+  - "generative models" means one of these two (see below).
+    - conditional generative model are most common in practice
+  ![img_571.png](img_571.png)
+  - why generative models?
+    - whenever there is some ambiguity in the task you're trying to model 
+    - the beauty of a probabilistic mode p(x|y) is that is "probabilistic"
+    - there may be a whole space of possible outputs "x", condition of that input label "y"
+    - intuition:
+      - sometimes there is a deterministic mapping: how many cats in the image?
+      - in a lot of cases is more subtle: 
+        - if i ask for a picture of a dog wearing a hot dog hat, 
+        - there is a lot of images that could exist based on that query, 
+        - and that is exactly what generative models are trying to model.
+  ![img_572.png](img_572.png)
+  ![img_573.png](img_573.png)
+  ![img_574.png](img_574.png)
+  - taxonomy of generative models: 
+    - when the slide says p(x) is a “density”, it means:
+      - a function that tells you how likely different data points are.
+    - intuition:
+      - 🗺️ imagine a city map (where people live):
+        - busy downtown: lots of people live there → high density
+        - outskirts: few people live there → low density
+        - middle of the ocean: almost nobody → near zero density
+        - a density model p(x) is like:
+          - "for every spot on the map, how crowded is it?"
+      - 🎶 waveform in a song:
+        - loud parts: high amplitude
+        - quiet parts: low amplitude
+        - a density model p(x) is like:
+          - "how loud is this moment?"
+    - the taxonomy splits generative models into two families:
+      - explicit density models
+        - the model can compute (or approximate) p(x).
+      - implicit density models
+        - the model cannot compute p(x), but it can still generate (sample) x.
+    - **A. explicit density models**
+      - i can write down a formula giving p(x).
+      - the model don't guess; they calculate!
+      - "i know the equation for a curve, so i can draw it."
+      - **A1. tractable density (can really compute p(x))**
+        - we know the probability exactly and can compute it efficiently.
+        - example:
+          - GPT-style autoregressive models
+          - $p(x) = p(x1) p(x2∣x1) p(x3∣x1,x2) ...$
+          - it predicts the next piece of data based strictly on what came before.
+      - **A2. approximate density (can approximate p(x))**
+        - we cannot compute p(x) exactly — instead we approximate it using tricks.
+        - example:
+          - variational autoencoders (VAEs)
+          - compress data → latent space (encoder)
+          - reconstruct data from latent → image (decoder)
+          - learn a probability model over latent variables
+      - **B. implicit density models**
+        - the model cannot compute p(x), but it can still generate (sample) x.
+        - i can draw a curve because i have seen many curves, but I don't know the equation.
+          - **B1. direct sampling — GANs**
+            - two networks compete:
+              - generator: makes fake images
+              - discriminator: tries to detect fake vs real
+            - the generator gets better until the discriminator can’t tell.
+            - both improve together...
+          - **B2. iterative sampling — diffusion models**
+            - "generate by slowly denoising random noise."
+            - process:
+              - step 1: start with pure noise
+              - step 2: gradually remove noise
+              - step 3: end with a realistic image
+  - 🎯 intuition:
+    - explicit models care about understanding probability.
+      - some models know the recipe.
+    - implicit models care about making realistic samples, not computing probabilities.
+      - others only know how to cook.
+  ![img_575.png](img_575.png)
