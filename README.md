@@ -2938,6 +2938,7 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_580.png](img_580.png)
 
 - what are autoencoders?
+  - [Autoencoders | Deep Learning Animated](https://www.youtube.com/watch?v=hZ4a4NgM3u0) 
   - [Reducing the Dimensionality of Data with Neural Networks](https://www.cs.toronto.edu/~hinton/absps/science.pdf) 
   - at its simplest, an autoencoder is a neural network designed to copy its input to its output.
   - it sounds pointless at first, why build a machine to just give me back what I gave it? 
@@ -2967,9 +2968,12 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_585.png](img_585.png)
   ![img_586.png](img_586.png)
   ![img_587.png](img_587.png)
-  ![img_588.png](img_588.png)
+  ![img_588.png](img_588.png) 
 
 - variational autoencoders
+  - [Variational Autoencoders | Generative AI Animated](https://www.youtube.com/watch?v=qJeaCHQ1k2w)
+  - [Understanding Variational Autoencoders (VAEs)](https://www.youtube.com/watch?v=HBYQvKlaE0A)
+  - [Variational Autoencoders](https://www.youtube.com/watch?v=9zKuYvjFFS8)
   - [Auto-Encoding Variational Bayes](https://arxiv.org/pdf/1312.6114)
   - [Pixel Recurrent Neural Networks](https://arxiv.org/abs/1601.06759)
   - what does "intractable" mean?
