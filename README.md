@@ -2763,6 +2763,8 @@ they affect the result, but the oven doesn’t set them—you do.
   ![img_558.png](img_558.png)
 
 - generative vs discriminative models
+  - [NIPS 2016 Tutorial: Generative Adversarial Networks](https://arxiv.org/pdf/1701.00160)
+  - [Generative Adversarial Networks](https://arxiv.org/pdf/1406.2661)
   ![img_559.png](img_559.png)
   - Data (x): the input the model see
     - → here: an image (the kitten)
@@ -2879,3 +2881,146 @@ they affect the result, but the oven doesn’t set them—you do.
     - implicit models care about making realistic samples, not computing probabilities.
       - others only know how to cook.
   ![img_575.png](img_575.png)
+
+- autoregressive models 
+  - $p(x) = f(x,W)$ 
+  - $x$: a data point (an image, a sentence, a number, etc.)
+  - $p(x)$: the probability that our model assigns to $x$
+  - $f(x, W)$: our model — a function with parameters $W$
+  - $W$: all trainable weights (numbers inside neural nets)
+  - 👉 we are trying to build a machine that says:
+    - "How likely is this data point?"
+  - we have a dataset:
+    - dataset: $x^{(1)},x^{(2)},...,x^{(N)}$
+    - $x^{(i)}$: the i-th example
+    - $N$: total number of training examples
+  - 🎯 training objective:
+    - $$W^{*} = \arg\max_W \prod_i p(x^{(i)})$$
+  - 🔁 the log trick
+    - $$\arg\max_W \prod_i p(x^{(i)}) \;\;\Longrightarrow\;\;  \arg\max_W \sum_i \log p(x^{(i)})$$
+    - why this works?
+      - log converts products into sums
+      - $$\log \left( \prod_i a_i \right) = \sum_i \log(a_i)$$
+      - log does NOT change where the maximum is
+      - because $\log(\cdot)$ is **monotonic increasing**.
+      - this have the benefits:
+        - avoids numerical underflow  
+        - simpler to optimize
+        - works well with gradient descent
+  - 📉 so how do we turn all this into a loss function?
+    - replace $p$ with the model $f$:
+    - $$\arg\max_W \sum_i \log f(x^{(i)}, W)$$
+    - in practice, we *minimize* the negative:
+    - $$\text{Loss}(W) = -\sum_i \log f(x^{(i)}, W)$$
+    - this is the **Negative Log Likelihood (NLL)**.
+  ![img_576.png](img_576.png)
+  - RNNs relate to autoregressive models like this:
+    - autoregressive models predict the next token given history.
+    - RNNs provide the mechanism to store history in hidden states.
+    - training uses maximum likelihood on next-token prediction.
+    - therefore: an RNN trained for next-token prediction is an autoregressive model.
+  ![img_577.png](img_577.png)
+  - LLMs are autoregressive models!
+  - autoregressive idea is:
+    - $$p(x) = \prod_{t=1}^{T} p(x_t \mid x_1, \dots, x_{t-1})$$
+  - transformers compute those conditionals using **masked self-attention**
+  - the mask ensures **no peeking into the future**
+  - maximum likelihood training still applies naturally
+  - **transformers are autoregressive models — just more powerful than RNNs.**
+  ![img_578.png](img_578.png)
+  - the problem with autoregressive models is that you need to break your data into a sequence
+  - images are more tricky to split, contrary to text they are not 1D
+  - images are not discrete
+  - despite those issues people still use autoregressive models on images
+  - [Pixel Recurrent Neural Networks](https://arxiv.org/pdf/1601.06759)
+  - [Conditional Image Generation with PixelCNN Decoders](https://arxiv.org/pdf/1606.05328)
+  ![img_579.png](img_579.png)
+  ![img_580.png](img_580.png)
+
+- what are autoencoders?
+  - [Reducing the Dimensionality of Data with Neural Networks](https://www.cs.toronto.edu/~hinton/absps/science.pdf) 
+  - at its simplest, an autoencoder is a neural network designed to copy its input to its output.
+  - it sounds pointless at first, why build a machine to just give me back what I gave it? 
+  - but the magic is in the middle...
+  - the network is forced to squeeze the data through a narrow "bottleneck."
+  - to successfully copy the input, it must learn to compress the data by keeping only the most important information and throwing away the noise.
+  - 📉 the encoder:
+    - it acts like a funnel. It takes the complex input $x$ and compresses it.
+    - as the slides show, this can be:
+      - MLP (Multi-Layer Perceptron)
+      - CNN (for images)
+      - Transformer
+  -  📦 the features / latent code ($z$)
+    - we want $z$ to be a small list of numbers that captures the essence of the image.
+    - the slide mentions these features should represent concepts like: 
+      - object identity 
+      - appearance
+      - scene type
+  -  📈 the decoder
+    - to train this system, there is usually a second network called a Decoder that takes the tiny features ($z$) and tries to blow them back up into the original image ($x$).
+    - the network learns by comparing the original input to the reconstructed output and trying to minimize the difference.
+  - example:
+    - ```input x  →  Encoder  →  z  →  Decoder  →  reconstructed x```
+  ![img_582.png](img_582.png)
+  ![img_583.png](img_583.png)
+  ![img_584.png](img_584.png)
+  ![img_585.png](img_585.png)
+  ![img_586.png](img_586.png)
+  ![img_587.png](img_587.png)
+  ![img_588.png](img_588.png)
+
+- variational autoencoders
+  - [Auto-Encoding Variational Bayes](https://arxiv.org/pdf/1312.6114)
+  - [Pixel Recurrent Neural Networks](https://arxiv.org/abs/1601.06759)
+  - what does "intractable" mean?
+    - in math, intractable means "we theoretically know it exists, but it is impossible to calculate in a reasonable amount of time.
+  - unlike the "autocomplete" method above, VAEs try to learn a hidden "concept" (latent variable) of the image first and then generate the image from that concept
+  - calculating the probability of every possible concept that could create an image is mathematically impossible (the integral is too hard).
+  - the solution: the lower bound since we can't calculate the exact probability (the "density"), the slide says we optimize a lower bound.
+  - 💡 analogy: 
+    - imagine you want to measure exactly how high a cloud is (the "True Density"), but your ruler doesn't reach that high (it's "intractable").
+    - however, you can build a floor (a "lower bound") underneath the cloud.
+    - if you push that floor up as high as possible, you get a very good estimate of where the cloud bottom is, even if you can't touch it directly.
+    - in VAEs, this "floor" is called the ELBO (Evidence Lower Bound). By maximizing the ELBO, we train the model effectively without needing to solve the impossible math.
+  - applications:
+    - generating images
+      - faces, digits, objects, sketches, textures, medical scans
+    - generating audio & speech
+      - voice synthesis, sound morphing
+    - generating sequences
+      - molecules, protein structures, handwriting, trajectories
+    - controllable generation
+      - interpolate between styles: cat → slightly more realistic cat → dog-like → dog
+    ![img_581.png](img_581.png)
+    ![img_589.png](img_589.png)
+    ![img_590.png](img_590.png)
+    ![img_591.png](img_591.png)
+    ![img_592.png](img_592.png)
+    ![img_593.png](img_593.png)
+    ![img_594.png](img_594.png)
+    ![img_595.png](img_595.png)
+    ![img_596.png](img_596.png)
+    ![img_597.png](img_597.png)
+    ![img_598.png](img_598.png)
+    ![img_599.png](img_599.png)
+    ![img_600.png](img_600.png)
+    ![img_601.png](img_601.png)
+    ![img_602.png](img_602.png)
+    ![img_603.png](img_603.png)
+    ![img_604.png](img_604.png)
+    ![img_605.png](img_605.png)
+    ![img_606.png](img_606.png)
+    ![img_607.png](img_607.png)
+    ![img_608.png](img_608.png)
+    ![img_609.png](img_609.png)
+    ![img_610.png](img_610.png)
+    ![img_611.png](img_611.png)
+    ![img_612.png](img_612.png)
+    ![img_613.png](img_613.png)
+    ![img_614.png](img_614.png)
+    ![img_615.png](img_615.png)
+    ![img_616.png](img_616.png)
+    ![img_617.png](img_617.png)
+    ![img_618.png](img_618.png)
+    ![img_619.png](img_619.png)
+    
