@@ -3091,4 +3091,129 @@ they affect the result, but the oven doesn’t set them—you do.
       - hard to scale to big models + data
     ![img_638.png](img_638.png)
   
-  
+- diffusion models
+  - [Deep Unsupervised Learning using Nonequilibrium Thermodynamics](https://arxiv.org/pdf/1503.03585)
+  - [Generative Modeling by Estimating Gradients of the Data Distribution](https://arxiv.org/pdf/1907.05600)
+  - [Denoising Diffusion Probabilistic Models](https://arxiv.org/pdf/2006.11239)
+  - [Score-Based Generative Modeling through Stochastic Differential Equations](https://arxiv.org/pdf/2011.13456)
+  ![img_639.png](img_639.png)
+  - Rectified Flow 
+  ![img_640.png](img_640.png)
+  - intuition:
+  ![img_641.png](img_641.png)
+  - rectified flow:
+    - [Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow](https://arxiv.org/pdf/2209.03003)
+    - training:
+      ![img_642.png](img_642.png)
+      ![img_643.png](img_643.png)
+    - inference:
+      ![img_644.png](img_644.png)
+    ![img_645.png](img_645.png)
+    ![img_646.png](img_646.png)
+    ![img_647.png](img_647.png)
+    ![img_648.png](img_648.png)
+    - [Classifier-Free Diffusion Guidance](https://arxiv.org/pdf/2207.12598)
+    - traditional guided diffusion models used a separate classifier to steer generation toward a prompt or label — but that adds complexity and noise.
+    - classifier-free guidance removes the external classifier by training one model that:
+      - sometimes sees the condition (e.g., text, label, caption)
+      - sometimes does not see it (conditioning replaced with null: `y = y_null`)
+    - so during training:
+      - 50% of the time → model learns p(x∣y) (conditional)
+      - 50% of the time → model learns p(x) (unconditional)
+    - this train the model to be both conditional and unconditional.
+    ![img_649.png](img_649.png)
+    ![img_650.png](img_650.png)
+    ![img_651.png](img_651.png)
+    ![img_652.png](img_652.png)
+    ![img_653.png](img_653.png)
+    ![img_654.png](img_654.png)
+    ![img_655.png](img_655.png)
+    ![img_656.png](img_656.png)
+    ![img_657.png](img_657.png)
+    - 🌫️ intuition: 
+      - imagine you are standing in a dense, foggy field ($x_t$). 
+      - you are trying to figure out where you came from.
+      - the setup: you started at a landmark (real data $x$), but you walked in a random direction adding "fog" (noise $z$). 
+      - now you are lost.
+      - the problem: 
+        - from where you are standing ($x_t$), you could have come from the "red village" (class A) or the "Blue Village" (Class B). it's ambiguous!
+      - the goal: 
+        - the model tries to predict a vector ($v$) that points back towards the clear data (or towards the noise, 
+        - depending on the math formulation).
+      - optimal prediction:
+        - because it's ambiguous, the "best" prediction isn't a single guess, but the average of all possible paths. 
+        - if you could have come from 3 different spots, the mathematical "optimal" guess is the average of those 3 spots.
+    ![img_658.png](img_658.png)
+    ![img_659.png](img_659.png)
+    ![img_660.png](img_660.png)
+    ![img_661.png](img_661.png)
+    ![img_662.png](img_662.png)
+    - most popular nowadays "Latent Diffusion Models (LDMs)"
+      - [High-Resolution Image Synthesis with Latent Diffusion Models](https://arxiv.org/pdf/2112.10752)
+      ![img_663.png](img_663.png)
+      ![img_664.png](img_664.png)
+      ![img_665.png](img_665.png)
+      ![img_666.png](img_666.png)
+      ![img_667.png](img_667.png)
+      - how do we train encoder+decoder?
+        ![img_668.png](img_668.png)
+        ![img_669.png](img_669.png)
+        - state of the art is VAE + GAN + diffusion!!! 
+        ![img_670.png](img_670.png)
+    - diffusion transformer (DiT)
+      - [Scalable Diffusion Models with Transformers](https://arxiv.org/pdf/2212.09748)
+        ![img_671.png](img_671.png)
+      - text-to-image
+        ![img_672.png](img_672.png)
+        - [FLUX (Black Forest Labs)](https://github.com/black-forest-labs/flux) 
+        ![img_673.png](img_673.png)
+      - text-to-video
+        - [Photorealistic Video Generation with Diffusion Models](https://arxiv.org/pdf/2312.06662)
+        - [Sora: Creating Video from Text](https://openai.com/index/sora/)
+        - [MovieGen: A Cast of Media Foundation Models](https://arxiv.org/pdf/2410.13720)
+        - [HunyuanVideo: A Systematic Framework For Large Video Generative Models](https://arxiv.org/pdf/2412.03603)
+          - [HunyuanVideo GitHub](https://github.com/Tencent-Hunyuan/HunyuanVideo)
+        - [Cosmos World Foundation Model Platform for Physical AI](https://arxiv.org/pdf/2501.03575)
+          - [NVIDIA Cosmos GitHub](https://github.com/nvidia-cosmos)
+        - [Wan: Open and Advanced Large-Scale Video Generative Models](https://arxiv.org/pdf/2503.20314)
+        ![img_674.png](img_674.png)
+        ![img_675.png](img_675.png)
+      - the era of video diffusion models!
+      ![img_676.png](img_676.png)
+      - diffusion distillation
+        - people are actively working to make diffusion models more efficient at inference time:
+        - [Progressive Distillation for Fast Sampling of Diffusion Models](https://arxiv.org/pdf/2202.00512)
+        - [Consistency Models](https://arxiv.org/pdf/2303.01469)
+        - [Adversarial Diffusion Distillation (ADD)](https://static1.squarespace.com/static/6213c340453c3f502425776e/t/65663480a92fba51d0e1023f/1701197769659/adversarial_diffusion_distillation.pdf)
+        - [Fast High-Resolution Image Synthesis with Latent Adversarial Diffusion Distillation](https://arxiv.org/pdf/2403.12015)
+        - [Simplifying, Stabilizing & Scaling Continuous-Time Consistency Models](https://proceedings.iclr.cc/paper_files/paper/2025/file/7e9c2053258b1bdd32ff2654802cd594-Paper-Conference.pdf)
+        - [Multistep Distillation of Diffusion Models via Moment Matching](https://arxiv.org/pdf/2406.04103)
+        - what is rectified flow? 
+          - rectified flow is a modern method for generating images (like Stable Diffusion 3 or Flux) that makes the path from "random noise" to "clean image" as straight as possible.
+          - 🧠 intuition:
+            - imagine you are driving from a chaotic, foggy city (Noise) to a beautiful destination (Data).
+            - standard diffusion: the GPS gives you a winding, zig-zag path through backroads. You have to take hundreds of tiny turns (sampling steps) to make sure you don't get lost.
+            - rectified flow: the GPS finds a straight highway. Because the path is straight, you can just floor the gas pedal and get there in very few steps (even just 1-4 steps) without ever getting off-track.
+          - why is this needed?
+            - ⚡ speed : because the path is a straight line, the computer doesn't need to do complex math at every tiny step.
+            - 🔋 efficiency : it requires much less computing power (NFEs) to get high-quality results compared to older models.
+            - 🛠 simplicity️: it uses a "velocity" ($v$-prediction) instead of complex noise schedules, making it easier to train and scale to massive models like stable diffusion 3.
+      ![img_677.png](img_677.png)
+      - generalized diffusion 
+      ![img_678.png](img_678.png)
+      ![img_679.png](img_679.png)
+      ![img_680.png](img_680.png)
+      ![img_681.png](img_681.png)
+      ![img_682.png](img_682.png)
+      ![img_683.png](img_683.png)
+      ![img_684.png](img_684.png)
+      ![img_685.png](img_685.png)
+      - [Perspectives on diffusion](https://sander.ai/2023/07/20/perspectives.html)
+        - must read: really nice article about diffusion models 
+        ![img_686.png](img_686.png)
+    - autoregressive models strike back!
+      ![img_687.png](img_687.png)
+    - summary
+      ![img_688.png](img_688.png)
+    
+    
