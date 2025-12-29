@@ -3216,4 +3216,244 @@ they affect the result, but the oven doesn’t set them—you do.
     - summary
       ![img_688.png](img_688.png)
     
-    
+- 3D vision
+  - 2D representation is usually trivial 2d-pixels
+  - ways of representing geometry
+    - explicit
+    - implicit
+  ![img_689.png](img_689.png)
+  ![img_690.png](img_690.png)
+
+- shape representations
+  ![img_708.png](img_708.png)
+  ![img_720.png](img_720.png)
+  ![img_724.png](img_724.png)
+  - point clouds
+    ![img_691.png](img_691.png)
+    ![img_692.png](img_692.png)
+    ![img_693.png](img_693.png)
+    ![img_694.png](img_694.png)
+  - polygon mesh
+    ![img_695.png](img_695.png)
+    ![img_696.png](img_696.png)
+    ![img_697.png](img_697.png)
+    - increase resolution via interpolation with subdivision
+      ![img_698.png](img_698.png)
+    - decrease resolution; try to preserve shape/appearance
+      ![img_699.png](img_699.png)
+    - mesh regularization; ensure faces simplicity
+      ![img_700.png](img_700.png)
+  - parametric representation
+    ![img_701.png](img_701.png)
+    - parametric curves
+      ![img_702.png](img_702.png)
+      ![img_703.png](img_703.png)
+      ![img_704.png](img_704.png)
+      ![img_705.png](img_705.png)
+      ![img_706.png](img_706.png)
+      ![img_707.png](img_707.png)
+
+- explicit representations of geometry
+  - is really easy to sample points in the surface 
+    ![img_709.png](img_709.png)
+    ![img_710.png](img_710.png)
+    ![img_711.png](img_711.png)
+  - is hard to test inside / outside
+    ![img_712.png](img_712.png)
+
+- implicit representations of geometry
+  ![img_713.png](img_713.png)
+  - sampling can be hard
+    ![img_714.png](img_714.png)
+  - is easy to test inside / outside
+    ![img_715.png](img_715.png)
+  - algebraic surfaces
+    ![img_716.png](img_716.png)
+  - constructive solid geometry
+    ![img_717.png](img_717.png)
+  - distance functions
+    - [scene of pure distance functions](https://iquilezles.org/articles/raymarchingdf/) 
+    ![img_718.png](img_718.png)
+    ![img_719.png](img_719.png)
+  - level set methods
+    ![img_721.png](img_721.png)
+    ![img_722.png](img_722.png)
+    ![img_723.png](img_723.png)
+
+- datasets
+  - priceton shape benchmark
+    ![img_725.png](img_725.png)
+  - prior 2014
+    ![img_726.png](img_726.png)
+  - ShapeNet
+    - [ShapeNet: An Information-Rich 3D Model Repository](https://arxiv.org/pdf/1512.03012)
+    - [3D ShapeNets: A Deep Representation for Volumetric Shapes](https://openaccess.thecvf.com/content_cvpr_2015/papers/Wu_3D_ShapeNets_A_2015_CVPR_paper.pdf)
+    ![img_727.png](img_727.png)
+  - Objverse (800k) and Objverse-XL (10M)
+    - [Objaverse: A Universe of Annotated 3D Objects](https://arxiv.org/pdf/2212.08051) 
+    - [Objaverse-XL: A Universe of 10M+ 3D Objects](https://arxiv.org/pdf/2307.05663)
+    ![img_728.png](img_728.png)
+  - object scans
+    - [A Large Dataset of Object Scans](https://arxiv.org/pdf/1602.02481) 
+    ![img_729.png](img_729.png)
+  - CO3D
+    - [Common Objects in 3D: Large-Scale Learning and Evaluation of Real-life 3D Category Reconstruction](https://arxiv.org/pdf/2109.00512)
+    ![img_730.png](img_730.png)
+  - from object to parts:
+    - [PartNet: A Large-scale Benchmark for Fine-grained and Hierarchical Part-level 3D Object Understanding](https://arxiv.org/pdf/1812.02713)
+    ![img_731.png](img_731.png)
+    ![img_732.png](img_732.png)
+  - indoor 3d scenes:
+    - [ScanNet: Richly-annotated 3D Reconstructions of Indoor Scenes](https://arxiv.org/pdf/1702.04405)
+    - [ARKitScenes: A Diverse Real-World Dataset For 3D Indoor Scene Understanding Using Mobile RGB-D Data](https://arxiv.org/pdf/2111.08897)
+    - [ScanNet++: A High-Fidelity Dataset of 3D Indoor Scenes](https://arxiv.org/pdf/2308.11417)
+    ![img_733.png](img_733.png)
+    ![img_734.png](img_734.png)
+
+- tasks: AI + geometry
+  ![img_735.png](img_735.png)
+  ![img_736.png](img_736.png)
+
+- multi-view CNN
+  - [Multi-view Convolutional Neural Networks for 3D Shape Recognition](https://arxiv.org/pdf/1505.00880) 
+  ![img_737.png](img_737.png)
+  ![img_738.png](img_738.png)
+  ![img_739.png](img_739.png)
+
+- pixels -> voxels
+  - [3D ShapeNets: A Deep Representation for Volumetric Shapes](https://arxiv.org/pdf/1406.5670)
+  ![img_740.png](img_740.png)
+  ![img_741.png](img_741.png)
+
+- 3D-GANs
+  - [Learning a Probabilistic Latent Space of Object Shapes via 3D Generative-Adversarial Modeling](https://arxiv.org/pdf/1610.07584)
+  - a latent shape network (3D geometry generator)
+  ![img_742.png](img_742.png)
+  - a differentiable projection layer to produce depth & silhouettes from a viewpoint
+  - a texture network to generate realistic 2D appearance conditioned on a learned texture code
+  - joint 3D geometry + appearance learning
+  ![img_743.png](img_743.png)
+  ![img_744.png](img_744.png)
+  ![img_745.png](img_745.png)
+
+- octave tree representations
+  - [OctNet: Learning Deep 3D Representations at High Resolutions](https://arxiv.org/pdf/1611.05009) 
+  ![img_746.png](img_746.png)
+  ![img_747.png](img_747.png)
+  ![img_748.png](img_748.png)
+  ![img_749.png](img_749.png)
+
+- octree generating networks:
+  - [Octree Generating Networks: Efficient Convolutional Architectures for High-resolution 3D Outputs](https://arxiv.org/pdf/1703.09438) 
+  ![img_750.png](img_750.png)
+
+- learning on point clouds:
+  - [PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation](https://arxiv.org/pdf/1612.00593) 
+  ![img_751.png](img_751.png)
+  - point permutation invariance
+    - the order of points shouldn’t matter.
+  - sampling invariance:
+    - a point cloud is just a sampling of an underlying 3D surface.
+    - different scans of the same object may give you:
+      - different numbers of points
+      - different densities
+      - different locations sampled on the surface
+      - noisy or partial scans
+    - so the network’s output should depend on the geometry of the object, not on the specific set of sampled points.
+  ![img_752.png](img_752.png)
+  ![img_753.png](img_753.png)
+  ![img_754.png](img_754.png)
+  ![img_755.png](img_755.png)
+  - graph NNs on point clouds
+    - [Dynamic Graph CNN for Learning on Point Clouds](https://arxiv.org/pdf/1801.07829)
+    ![img_756.png](img_756.png)
+  - distance metrics for point clouds
+    - [A Point Set Generation Network for 3D Object Reconstruction from a Single Image](https://arxiv.org/pdf/1612.00603)
+    ![img_757.png](img_757.png)
+
+- parametric decoder: AtlasNet
+  - [AtlasNet: A Papier-Mâché Approach to Learning 3D Surface Generation](https://arxiv.org/pdf/1802.05384) 
+  - AtlasNet proposes:
+    - represent a surface as multiple parametric patches
+    - each patch is learned as: $MLP(z,u,v) → (x,y,z)$
+    - where:
+      - $z$ = latent shape code
+      - $(u, v)$ = coordinates on a 2D square (a chart)
+  - uses parametric representation
+  - more "smooth" than point clouds
+  ![img_758.png](img_758.png)
+  ![img_759.png](img_759.png)
+
+- deep implicit functions
+  - [Occupancy Networks: Learning 3D Reconstruction in Function Space](https://arxiv.org/pdf/1812.03828)
+  - [DeepSDF: Learning Continuous Signed Distance Functions for Shape Representation](https://arxiv.org/pdf/1901.05103)
+  - [Learning Implicit Fields for Generative Shape Modeling](https://arxiv.org/pdf/1812.02822)
+  - [Learning to Infer Implicit Surfaces without 3D Supervision](https://arxiv.org/pdf/1911.00767)
+  - [Deep Level Sets: Implicit Surface Representations for 3D Shape Inference](https://arxiv.org/pdf/1901.06802)
+  ![img_760.png](img_760.png)
+  - collection of implicit functions
+    - [Local Deep Implicit Functions for 3D Shape](https://arxiv.org/pdf/1912.06126)  
+    ![img_761.png](img_761.png)
+  - NeRF:
+    - NeRF learns a function that tells you what color and density exist at any 3D point, from any viewing direction.
+    - to render an image, it shoots many rays from the camera, samples points along each ray, asks the network for color+density at each point, and blends them using volume-rendering math.
+    - the network is trained so that its rendered images match the real photos.
+    - in simple terms:
+      - 👉 NeRF = a neural network that memorizes a 3D scene and can render new views of it.
+    - [NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis](https://arxiv.org/pdf/2003.08934) 
+    ![img_762.png](img_762.png)
+    - how differentiable volume rendering works:
+    ![img_763.png](img_763.png)
+    ![img_764.png](img_764.png)
+    ![img_765.png](img_765.png)
+    - NeRF-style implicit fields into generative models:
+      - in NeRF you can learn directly from images
+      - NeRF tends to be is slow because it needs to sample many 3d points to work
+    ![img_766.png](img_766.png)
+  - gaussian splatting
+    - [3D Gaussian Splatting for Real-Time Radiance Field Rendering](https://arxiv.org/pdf/2308.04079)  
+    - 3D Gaussian Splatting represents a scene as a bunch of tiny colored blobs (Gaussians) floating in space — instead of storing a neural network like NeRF does.
+    - each Gaussian has:
+      - position (x, y, z)
+      - size + shape (anisotropic covariance)
+      - color
+      - opacity
+      - view-dependent shading terms
+    - think of them as soft 3D pixels.
+    - 🎥 How it renders?
+      - to render an image, the Gaussians are projected (“splatted”) onto the screen and blended very efficiently using GPU rasterization.
+    - because nothing has to be sampled along rays like NeRF:
+      - it runs in real-time
+      - it trains faster
+      - it’s easier to edit / compress
+    - 🏗️ how it’s trained?
+      - start with a point cloud from Structure-from-Motion.
+      - convert each point into a Gaussian.
+      - optimize all Gaussians so rendered images match the training photos.
+      - optimization adjusts positions, shapes, colors, and opacities.
+    ![img_767.png](img_767.png)
+    ![img_768.png](img_768.png)
+  - anatomy of a structure-aware representation
+    ![img_769.png](img_769.png)
+    - representing element structure
+      - segmented geometry 
+        - [Global-to-Local Generative Model for 3D Shapes](https://graphics.stanford.edu/courses/cs348n-22-winter/PapersReferenced/Global-to-Local.pdf)
+        - [Learning Generative Models of 3D Structures](https://diglib.eg.org/server/api/core/bitstreams/d36469d1-c6c7-4579-a764-f2a4b79ad28e/content)
+        ![img_770.png](img_770.png)
+      - part sets
+        - [ComplementMe: Weakly-Supervised Component Suggestions for 3D Modeling](https://arxiv.org/pdf/1708.01841) 
+        ![img_771.png](img_771.png)
+      - sets of volumetrics primitives
+        - [PlanIT: Planning and Instantiating Indoor Scenes with Scene Graph Priors](https://kwang-ether.github.io/pdf/planit.pdf) 
+        ![img_772.png](img_772.png
+      - relationship graphs:
+        ![img_773.png](img_773.png)
+      - hierarchies:
+        ![img_774.png](img_774.png)
+      - hierarchical graphs:
+        - [StructureNet: Hierarchical Graph Networks for 3D Shape Generation](https://arxiv.org/pdf/1908.00575) 
+        ![img_775.png](img_775.png)
+        ![img_776.png](img_776.png)
+      - programs:
+        ![img_777.png](img_777.png)
+      
