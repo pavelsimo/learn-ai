@@ -3260,5 +3260,226 @@ they affect the result, but the oven doesn’t set them—you do.
       - programs:
         ![img_777.png](images/img_777.png)
 
-
  - robot learning
+   - goal: learn how to take actions that maximize reward
+  ![robot learning](images/2025-12-30-21-29-27.png)
+
+  - fast-growing field
+  ![fast-growing-field](images/2025-12-31-12-00-18.png)
+  ![research-companies](images/2025-12-31-12-01-16.png)
+
+  - problem formulation
+  ![problem-formulation](images/2025-12-31-12-02-56.png)
+    - examples:
+      - [High-Dimensional Continuous Control Using Generalized Advantage Estimation](https://arxiv.org/pdf/1506.02438)
+      - [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/pdf/1312.5602)
+      - [Mastering the game of Go with deep neural networks and tree search](https://storage.googleapis.com/deepmind-media/alphago/AlphaGoNaturePaper.pdf)
+      - [Mastering Chess and Shogi by Self-Play with a General Reinforcement Learning Algorithm](https://arxiv.org/pdf/1712.01815)
+      - [Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model](https://arxiv.org/pdf/1911.08265)
+      - [Grandmaster level in StarCraft II using multi-agent reinforcement learning](https://storage.googleapis.com/deepmind-media/research/alphastar/AlphaStar_unformatted.pdf)
+      - [OpenAI Five defeats Dota 2 world champions](https://openai.com/index/openai-five-defeats-dota-2-world-champions/#how-openai-five-works)
+      ![cart-pole-problem](images/2025-12-31-12-05-05.png)
+      ![robot-locomotion](images/2025-12-31-13-31-15.png)
+      ![atari-games](images/2025-12-31-13-32-18.png)
+      ![atari-games-2](images/2025-12-31-22-26-56.png)
+      - [Google DeepMind's Deep Q-learning playing Atari Breakout!](https://www.youtube.com/watch?v=V1eYniJ0Rnk)
+      ![go-game](images/2025-12-31-13-35-58.png)
+      ![playing-games](images/2025-12-31-22-38-05.png)
+      ![chatbot](images/2025-12-31-21-49-15.png)
+      ![cloth-folding](images/2025-12-31-21-50-03.png)
+      ![alpha-star](images/2025-12-31-22-38-57.png)
+
+  - robot perception
+    ![robot-perception](images/2025-12-31-21-53-27.png)
+    ![sensors](images/2025-12-31-21-55-23.png)
+    - [advanced robotics initative](https://web.engg.hku.hk/home/robotics/)
+    - [Robotic Pick-and-Place of Novel Objectsin Clutter with Multi-Affordance Grasping and Cross-Domain Image Matching](https://arxiv.org/pdf/1710.01330)
+    - robot vision is embodied, active and evironmentally situatied
+    - embodied:
+      - robots have physical bodies and experience the word directly.
+      - their actions are part of a dynamic with the world and have immediate feedback on their own sensation.
+    - active:
+      - robots are active perceivers. it knows why it wishes to sense, and chooses what to perceive, and
+      - determines how, when and where to achieve that perception.
+    - situated:
+      - robots are situated in the world, they do knot deal with abstract descriptions
+      - but with the "here" and "now" of the world directly influencing the behaviour of the system
+    ![](images/2025-12-31-22-00-57.png)
+    - the perception-action loop:
+      ![perception-action-loop](images/2025-12-31-22-09-33.png)
+      - [Efficient Model Learning for Human-Robot Collaborative Tasks](https://arxiv.org/pdf/1405.6341)
+      - [End-to-End Training of Deep Visuomotor Policies](https://arxiv.org/pdf/1504.00702)
+      - [Interactive Perception: Leveraging Action in Perception and Perception in Action](https://arxiv.org/pdf/1604.03670)
+    - reinforcement learning
+      - trial and error...
+      - is a way to allow the agents to interact with the enviroment and do trial and error to maximize a reward or minimize the cost.
+      ![reinforcement-learning](images/2025-12-31-22-13-36.png)
+      - really suitable for game-agents
+      - what is the difference between reinforcement learning and supervised learning?
+        - there is a "stochasticity" in the real world environments
+        - same actions may lead different results thus different rewards
+        - consider when a robot move a box, it may rotate in different directions due to the "stochasticity" of the environment
+        - in addition, in the real world the rewards may be "delay",
+        - for instance: in the game of go you may not know if you're losing or winning until a few moves ahead
+        - non-differentiable: you can't backprop through world... can't compute the gradients!
+        - non-stationary: what the agent experiences depends on how it acts
+        ![](images/2025-12-31-22-15-45.png)
+        ![](images/2025-12-31-22-16-36.png)
+        ![](images/2025-12-31-22-19-08.png)
+        ![](images/2025-12-31-22-22-21.png)
+        ![](images/2025-12-31-22-22-56.png)
+      - in robotics: locomotion
+        - [Learning Quadrupedal Locomotion over Challenging Terrain](https://arxiv.org/pdf/2010.11251)
+        - the domain of robot locomotion is close to be a solve problem!
+        - and the solution is reinforcement learning
+        - [Learning Quadrupedal Locomotion over Challenging Terrain](https://www.youtube.com/watch?v=9j2a1oAHDL8)
+        - [Unitree B2-W Talent Awakening!](https://www.youtube.com/watch?v=X2UxtKLZnNo)
+      - in robotics: dexterous manipulation
+        - [Solving Rubik’s Cube with a Robot Hand](https://arxiv.org/pdf/1910.07113)
+          - [YouTube: Solving Rubik’s Cube with a Robot Hand](https://www.youtube.com/watch?v=x4O8pojMF0w)
+        - [Visual Dexterity: In-Hand Reorientation of Novel and Complex Object Shapes](https://arxiv.org/pdf/2211.11744)
+          - [YouTube: Visual Dexterity - dynamic in-hand reorient of complex objects in air](https://www.youtube.com/watch?v=cCtpNDl4IeU)
+      - problems of model-free RL:
+        ![](images/2025-12-31-23-02-06.png)
+        ![](images/2025-12-31-23-03-05.png)
+        ![](images/2025-12-31-23-03-29.png)
+
+      - model learning & model-based planning:
+        ![](images/2025-12-31-23-11-15.png)
+
+      - pixel dynamics - deep visial foresight
+        - [Deep Visual Foresight for Planning Robot Motion](https://arxiv.org/pdf/1610.00696)
+        - [YouTube: Deep Visual Foresight for Planning Robot Motion](https://www.youtube.com/watch?v=6k7GHG4IUCY)
+        - instead of programming the robot with strict rules (e.g., "move hand 10cm forward")
+        - the robot learns to predict the future video frames based on its actions.
+        - so, it takes the Current Image + Proposed Action.
+        - it generates a Predicted Image (what the world will look like 1 second later).
+        - if the predicted image looks like success, the robot performs the action!
+        ![](images/2026-01-01-20-49-18.png)
+
+      - keypoint dynamics
+        - [Keypoints into the Future: Self-Supervised Correspondence in Model-Based Reinforcement Learning](https://arxiv.org/pdf/2009.05085)
+        - [YouTube: Keypoints into the Future: 5 minute CoRL video](https://www.youtube.com/watch?v=qxC7XS4eFFw)
+        - this paper is the smarter, faster younger sibling of the "Pixel Dynamics" above.
+        - the old problem (Pixel Dynamics): the previous robot tried to imagine the future by painting every single pixel of the next video frame. that’s heavy mental work!
+        - the new solution (Keypoint Dynamics): this robot realizes it doesn't need to predict the whole picture. It just needs to track a few important spots (keypoints) on the object.
+        - if the robot wants to push a sugar box, it just tracks 5-10 specific points on the box (like the corners and logo). It predicts where those dots will move, rather than where every pixel will move.
+        ![](images/2026-01-01-20-57-04.png)
+
+      - particle dynamics
+        - [Dynamic-Resolution Model Learning for Object Pile Manipulation](https://arxiv.org/pdf/2306.16700)
+        - the previous papers dealt with rigid things (like a coffee mug or a sugar box).
+        - but what happens if you ask a robot to sweep up a pile of coffee beans, rice, or chopped onions? 🧅🍚
+        - the problem:
+          - a pile of rice isn't just one object;
+          - it's thousands of tiny grains.
+          - if the robot tries to track every single grain (like it tracked the sugar box),
+          - its brain would explode from the math! 🤯
+        - the solution (particle dynamics):
+          - the robot simplifies the world.
+          - instead of tracking 10,000 real grains, it groups them into larger, virtual "blue blobs" (particles).
+        - the "Dynamic" Twist:
+          - the robot is smart about detail.
+          - it uses more particles where the action is happening (complex movement)
+          - and fewer particles where the pile is just sitting still.
+          - it zooms in and out of the physics details automatically.
+        ![](images/2026-01-01-20-58-34.png)
+        ![](images/2026-01-01-21-10-30.png)
+        ![](images/2026-01-01-21-11-38.png)
+        ![](images/2026-01-01-21-12-22.png)
+
+        - advance particle dynamics
+          - [RoboCook: Long-Horizon Elasto-Plastic Object Manipulation with Diverse Tools](https://arxiv.org/pdf/2306.14447)
+          - [YouTube: RoboCook: Dumpling Making Under Human Perturbation](https://www.youtube.com/watch?v=rpfxhkh1nS4)
+          - this paper is the "advanced level" of Particle Dynamics. While the previous paper focused on pushing simple piles of beans, RoboCook teaches a robot how to handle dough (elasto-plastic material).
+          - the challenge:
+            - dough is frustrating.
+            - you can squish it, roll it, cut it, or press it into a dumpling maker,
+            - and it stays in that new shape.
+          - the solution:
+            - the robot doesn't just use its hands
+            - it learns to use tools.
+            - it learns that a roller makes things flat, while a knife cuts them.
+          - how it works:
+            - the robot looks at the dough as a collection of particles
+            - and "imagines" how different tools (numbered 1–15 in the image) will transform that dough over a long period.
+          ![](images/2026-01-01-21-22-27.png)
+          ![](images/2026-01-01-21-23-02.png)
+          ![](images/2026-01-01-21-30-42.png)
+
+        - imitation learning
+          - behaviour cloning (BC)
+            - the intuition:
+              - it's like a student who only memorizes the answers to a test but doesn't understand the subject.
+            - the risk:
+              - as shown in the "Learned Policy" car diagram,
+              - if the robot makes a tiny mistake and goes off the "Expert Trajectory,"
+              - it has no data on how to recover and will crash.
+            ![](images/2026-01-01-21-41-55.png)
+            ![](images/2026-01-01-21-46-23.png)
+
+        - inverse reinforcement learning (IRL)
+          - reinforcement learning (RL):
+            - we give the robot a "Score" (Reward).
+            - 🏆 the robot tries a million things until it finds the behavior that gets the highest score.
+          - inverse reinforcement learning (IRL):
+            - we show the robot a human doing a task (Behavior).
+            - 🏃‍♂️ the robot has to guess what the "Score" (Reward) was that the human was trying to optimize.
+          - the core idea:
+            - instead of telling a robot how to do something,
+            - we show it a demonstration and let the robot figure out the intent or the goal behind it.
+          ![](images/2026-01-01-21-50-54.png)
+          ![](images/2026-01-01-21-58-07.png)
+
+        - implicit behavioral cloning (IBC)
+          - [Implicit Behavioral Cloning](https://arxiv.org/pdf/2109.00137)
+          - explicit policy (The old way):
+            - you try to memorize a single formula to spit out the answer instantly.
+          - implicit policy (The IBC way):
+            - you look at several possible answers and say, "this one feels most correct."
+          - implicit behavior cloning (IBC) doesn't try to predict the exact movement the robot should make.
+          - instead, it looks at a bunch of possible movements and gives each one a "score" based on how much it looks like what a human would do.
+          - the robot then picks the action with the best score! 🏆
+          ![](images/2026-01-01-22-02-44.png)
+          ![](images/2026-01-01-22-04-13.png)
+
+        - diffusion policies
+          - [Diffusion Policy: Visuomotor Policy Learning via Action Diffusion](https://arxiv.org/abs/2303.04137)
+          ![](images/2026-01-01-22-12-59.png)
+          - this is currently one of the "hottest" topics in robotics.
+          - it takes the technology behind Stable Diffusion (the AI that generates images like Midjourney)
+          - and applies it to how a robot moves.
+          - the problem:
+            - real-world tasks are messy.
+            - sometimes there are many ways to do something,
+            - and traditional "Explicit Policies" get "average"
+            - and shaky because they can't decide which way to go.
+          - the solution:
+            - the robot starts with a "cloud of static" (random, noisy movement)
+            - and slowly sculpts it into a smooth, clean action.
+            - how it works:
+              - instead of predicting one single action,
+              - it learns the "gradient field" (the blue arrows in the image)
+              - that pushes any random movement toward the "perfect" trajectory.
+          - breakdown of the Image
+            - (a) Explicit Policy:
+              - the "old way." It tries to jump straight from Observation ($\mathbf{o}$) to Action ($\mathbf{\hat{a}}$).
+              - it often fails when the math gets "multimodal" (many correct answers).
+            - (b) implicit policy:
+              - the "Judge." it scores different actions.
+              - you can see the "energy" map where the dark blue circle represents the "best" scores.
+            - (c) diffusion policy: the "new way."
+              - $\nabla E(\mathbf{a})$: this represents the robot's ability to "see" the slope toward a better action.
+              - gradient field: the blue arrows show the "pull" toward the ideal motion.
+              - $K$ iter: the robot repeats this "sculpting" process $K$ times until the action is perfect.
+        - what is the difference between imitation learning and reinforcement learning?
+          - imitation learning: “Do exactly what the expert did.”
+          - IRL: “Figure out what the expert was trying to achieve — then learn to act to achieve that goal.”
+
+          |                        | **Imitation Learning**  | **Inverse Reinforcement Learning** |
+          | ---------------------- | ----------------------- | ---------------------------------- |
+          | Learns                 | Policy (state → action) | Reward function (then policy)      |
+          | Uses demonstrations to | Directly copy behavior  | Understand underlying goals        |
+          | Training style         | Supervised learning     | RL + optimization                  |
+          | Generalization         | Limited, copies demos   | Often better generalization        |
+          | Complexity             | Simple                  | Harder, slower                     |
