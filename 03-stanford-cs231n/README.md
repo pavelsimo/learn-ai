@@ -3472,6 +3472,7 @@ they affect the result, but the oven doesn’t set them—you do.
               - $\nabla E(\mathbf{a})$: this represents the robot's ability to "see" the slope toward a better action.
               - gradient field: the blue arrows show the "pull" toward the ideal motion.
               - $K$ iter: the robot repeats this "sculpting" process $K$ times until the action is perfect.
+
         - what is the difference between imitation learning and reinforcement learning?
           - imitation learning: “Do exactly what the expert did.”
           - IRL: “Figure out what the expert was trying to achieve — then learn to act to achieve that goal.”
@@ -3483,3 +3484,82 @@ they affect the result, but the oven doesn’t set them—you do.
           | Training style         | Supervised learning     | RL + optimization                  |
           | Generalization         | Limited, copies demos   | Often better generalization        |
           | Complexity             | Simple                  | Harder, slower                     |
+
+        - robotic foundation models
+          - to understand this, think about ChatGPT.
+          - ChatGPT is a "Foundation Model" for text—it read the whole internet so it can answer almost any question.
+          - a robotic foundation model is the same concept, but for physical movement and action.
+          - no explicit representation:
+            - slide text: "No explicit representation of states / transition functions"
+            - the old way (explicit): in traditional robotics, engineers had to painstakingly write math equations for everything.
+            - if a robot wanted to pick up a cup, it needed a physics equation for the friction of the cup, the weight of the arm, and the gravity in the room.
+          - the foundation model way (implicit):
+            - the model doesn't "know" physics equations.
+            - instead, it learns from experience, just like a human does.
+          - analogy: 🚗
+            - think about driving.
+            - when you turn the steering wheel, you aren't calculating the coefficient of friction on the tires
+            - or the vector of the car's momentum.
+            - you just know "if I turn the wheel this much, the car goes that way."
+            - that is an implicit understanding.
+          - the policy map (the "brain")
+            - slide text: "A policy that maps (observation/state, goal) to action"
+            - this is the core function of the robot.
+            - it’s a mathematical function (usually a Neural Network) that takes two inputs and gives one output.
+            - input 1 (State $s_t$): "what do i see right now?" (e.g., camera images, joint positions).
+            - input 2 (Goal $g$): "what am i supposed to do?" (e.g., "pick up the apple").
+            - output (Action $a_t$): "how should i move my motors?"
+          ![](images/2026-01-02-12-50-14.png)
+          ![](images/2026-01-02-12-53-53.png)
+          ![](images/2026-01-02-12-54-39.png)
+          ![](images/2026-01-02-12-55-16.png)
+          - evolution of robotic foundation models
+            - [RT-1: Robotics Transformer for Real-World Control at Scale](https://arxiv.org/pdf/2212.06817)
+            - [RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control](https://arxiv.org/pdf/2307.15818)
+            - [RT-X — Open X-Embodiment & RT-X models](https://arxiv.org/pdf/2310.08864)
+            - [OpenVLA — Open-Source Vision-Language-Action Model](https://arxiv.org/pdf/2406.09246)
+            - [π_0: A Vision-Language-Action Flow Model for General Robot Control](https://arxiv.org/pdf/2410.24164)
+            - [π_{0.5}: a Vision-Language-Action Model with Open-World Generalization](https://arxiv.org/pdf/2504.16054)
+            - [Helix: A Vision-Language-Action Model for Generalist Humanoid Control](https://www.figure.ai/news/helix)
+            - [Gemini Robotics: Bringing AI into the Physical World](https://arxiv.org/pdf/2503.20020)
+            - [GR00T N1: An Open Foundation Model for Generalist Humanoid Robots](https://arxiv.org/pdf/2503.14734)
+            - [DYNA-1 (DYNA Robotics)](https://www.dyna.co/dyna-1/research)
+            ![](images/2026-01-02-12-58-40.png)
+          - Pi-Zero by physical intelligence
+            ![](images/2026-01-02-13-13-45.png)
+            ![](images/2026-01-02-13-13-57.png)
+            ![](images/2026-01-02-13-15-25.png)
+            ![](images/2026-01-02-13-15-35.png)
+            ![](images/2026-01-02-13-16-15.png)
+            ![](images/2026-01-02-13-16-51.png)
+            ![](images/2026-01-02-13-17-06.png)
+            ![](images/2026-01-02-13-17-15.png)
+            ![](images/2026-01-02-13-17-27.png)
+          - evaluation of the robot learning models
+            - [ALOHA 2](https://aloha-2.github.io/)
+            - [ALOHA 2: An Enhanced Low-Cost Hardware for Bimanual Teleoperation](https://aloha-2.github.io/assets/aloha2.pdf)
+            - [ROBOTICS KNOWLEDGE HUB](https://www.trossenrobotics.com/learn)
+            ![](images/2026-01-02-13-22-37.png)
+            ![](images/2026-01-02-13-32-00.png)
+          - from foundation policy to foundation world models:
+            - there is a major shift in how AI researchers think about robot brains.
+            - instead of just teaching a robot "what to do," they are now teaching it "how the world works".
+            - analogy:
+              - imagine you are standing in front of a glass of water.
+              - a Policy only knows the command "move hand forward."
+              - a world model knows: "If I move my hand forward and hit this glass, the water will spill".
+              - it can "dream" or simulate the future in its head before it actually moves.
+            - the three pillars of physical intelligence:
+              - **action-conditioned robot interaction data:**
+                - this is the "fuel" for the system.
+                - it consists of millions of videos of robots doing things and seeing the results.
+              - **foundation policy (the doer):**
+                - this is the part that takes an observation and a goal and turns it into a physical movement (Action $a_t$).
+                - it focuses on execution.
+              - **foundation world models (the predictor):**
+                - this is the new, more advanced layer.
+                - it takes the current state and a potential action, and predicts what the next state ($s_{t+1}$) will look like.
+                - this is the robot's imagination. it allows the robot to "test" an action in its mind to see if it leads to the goal or a disaster (like breaking the glass).
+            - [1X World Model: The AI-Powered Future of Robot Simulations](https://www.youtube.com/watch?v=7tjVALT35Pw)
+            ![](images/2026-01-02-13-34-45.png)
+            ![](images/2026-01-02-13-40-47.png)
